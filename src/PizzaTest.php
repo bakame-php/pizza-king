@@ -22,7 +22,7 @@ final class PizzaTest extends TestCase
         self::assertSame([$meat], $pizza->meats());
         self::assertEquals(Euro::fromCents(1200), $pizza->price());
 
-        $ingredients = $pizza->toIngredients();
+        $ingredients = $pizza->ingredients();
 
         self::assertContainsOnlyInstancesOf(Ingredient::class, $ingredients);
         self::assertContains($cheese, $ingredients);

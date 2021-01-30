@@ -11,7 +11,7 @@ use function count;
 use function reset;
 use function strtolower;
 
-final class Pizza implements Ingredient
+final class Pizza implements Dish
 {
     private const NAME = 'pizza';
 
@@ -101,8 +101,7 @@ final class Pizza implements Ingredient
         return $this->meats;
     }
 
-    /** array<Ingredient> */
-    public function toIngredients(): array
+    public function ingredients(): iterable
     {
         return [$this->cheese, $this->sauce, ...$this->meats];
     }
