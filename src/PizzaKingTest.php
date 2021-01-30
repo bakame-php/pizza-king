@@ -20,10 +20,7 @@ final class PizzaKingTest extends TestCase
     {
         $pizza = $this->createPizza(['sauce tomate', 'jambon', 'mozzarella']);
 
-        self::assertSame(Sauce::tomato()->name(), $pizza->sauce()->name());
-        self::assertSame(Cheese::mozzarella()->name(), $pizza->cheese()->name());
-        self::assertCount(1, $pizza->meats());
-
+        self::assertCount(3, $pizza->ingredients());
         self::assertEquals(Euro::fromCents(1000), $pizza->price());
     }
 
@@ -31,10 +28,7 @@ final class PizzaKingTest extends TestCase
     {
         $pizza = $this->createPizza(['sauce tomate', 'mozzarella']);
 
-        self::assertSame(Sauce::tomato()->name(), $pizza->sauce()->name());
-        self::assertSame(Cheese::mozzarella()->name(), $pizza->cheese()->name());
-        self::assertCount(0, $pizza->meats());
-
+        self::assertCount(2, $pizza->ingredients());
         self::assertEquals(Euro::fromCents(800), $pizza->price());
     }
 
@@ -42,10 +36,7 @@ final class PizzaKingTest extends TestCase
     {
         $pizza = $this->createPizza(['chevre', 'tomato']);
 
-        self::assertSame(Sauce::tomato()->name(), $pizza->sauce()->name());
-        self::assertSame(Cheese::goat()->name(), $pizza->cheese()->name());
-        self::assertCount(0, $pizza->meats());
-
+        self::assertCount(2, $pizza->ingredients());
         self::assertEquals(Euro::fromCents(700), $pizza->price());
     }
 
@@ -53,10 +44,7 @@ final class PizzaKingTest extends TestCase
     {
         $pizza = $this->createPizza(['creme', 'mozzarella', 'jambon', 'pepperoni']);
 
-        self::assertSame(Sauce::cream()->name(), $pizza->sauce()->name());
-        self::assertSame(Cheese::mozzarella()->name(), $pizza->cheese()->name());
-        self::assertCount(2, $pizza->meats());
-
+        self::assertCount(4, $pizza->ingredients());
         self::assertEquals(Euro::fromCents(1400), $pizza->price());
     }
 
