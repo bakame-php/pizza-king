@@ -31,7 +31,7 @@ final class UnableToHandleIngredient extends \InvalidArgumentException implement
         return new self('An unknown or unsupported ingredient has been detected.');
     }
 
-    public static function dueToUnknownIngredient(string $ingredient = ''): self
+    public static function dueToUnknownIngredient(string $ingredient): self
     {
         return new self('`'.$ingredient.'` is an invalid or an unknown ingredient.');
     }

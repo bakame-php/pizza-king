@@ -6,12 +6,12 @@ on:
 
 jobs:
   phpunit:
-    name: PHPUnit tests on ${{ matrix.php }} ${{ matrix.composer-flags }}
+    name: test suite for composing pizza - ${{ matrix.php }} ${{ matrix.composer-flags }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php: [ '8.0' ]
-        composer-flags: [ '--ignore-platform-req=php' ]
+        composer-flags: [ '' ]
         phpunit-flags: [ '--coverage-text' ]
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,4 @@ jobs:
           coverage: pcov
           tools: composer:v2
       - run: composer update --no-progress ${{ matrix.composer-flags }}
-      - run: vendor/bin/phpunit ${{ matrix.phpunit-flags }}
-      - run: vendor/bin/phpstan analyse -l max -c phpstan.neon src --ansi
-      - run: vendor/bin/psalm --show-info=true
-      - run: vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
+      - run: composer test
