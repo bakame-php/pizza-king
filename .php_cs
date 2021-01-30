@@ -1,14 +1,5 @@
 <?php
 
-$header = <<<EOF
-Pizza King (https://github.com/bakame-php/pizza-king/)
-
-(c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
-
-For the full copyright and license information, please view the LICENSE
-file that was distributed with this source code.
-EOF;
-
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/src')
 ;
@@ -18,12 +9,6 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
-        'header_comment' => [
-            'commentType' => 'PHPDoc',
-            'header' => $header,
-            'location' => 'after_open',
-            'separate' => 'both',
-        ],
         'new_with_braces' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_phpdoc' => true,
