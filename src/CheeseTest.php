@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * Pizza King (https://github.com/bakame-php/pizza-king/)
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace Bakame\PizzaKing;
+
+use PHPUnit\Framework\TestCase;
+
+final class CheeseTest extends TestCase
+{
+    /** @test */
+    public function it_can_create_mozzarella_cheese(): void
+    {
+        $cheese = Cheese::mozzarella();
+
+        self::assertSame('mozzarella', $cheese->name());
+        self::assertEquals(Euro::fromCents(300), $cheese->price());
+    }
+
+    /** @test */
+    public function it_can_create_mozzarella_cheese_with_specified_price(): void
+    {
+        $price = Euro::fromCents(600);
+        $cheese = Cheese::mozzarella($price);
+
+        self::assertSame('mozzarella', $cheese->name());
+        self::assertSame($price, $cheese->price());
+    }
+
+    /** @test */
+    public function it_fails_creating_a_mozzarella_cheese_with_invalid_price(): void
+    {
+        $this->expectException(UnableToHandleIngredient::class);
+
+        Cheese::mozzarella(Euro::fromCents(-1));
+    }
+
+    /** @test */
+    public function it_can_create_goat_cheese(): void
+    {
+        $cheese = Cheese::goat();
+
+        self::assertSame('goat', $cheese->name());
+        self::assertEquals(Euro::fromCents(200), $cheese->price());
+    }
+
+    /** @test */
+    public function it_can_create_goat_cheese_with_specified_price(): void
+    {
+        $price = Euro::fromCents(600);
+        $cheese = Cheese::goat($price);
+
+        self::assertSame('goat', $cheese->name());
+        self::assertSame($price, $cheese->price());
+    }
+
+    /** @test */
+    public function it_fails_creating_a_goat_cheese_with_invalid_price(): void
+    {
+        $this->expectException(UnableToHandleIngredient::class);
+
+        Cheese::goat(Euro::fromCents(-1));
+    }
+}

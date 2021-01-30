@@ -1,0 +1,35 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Bakame\\PizzaKing\\": "src"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "vimeo/psalm": "^4.4",
+        "phpstan/phpstan": "^0.12.70",
+        "phpstan/phpstan-strict-rules": "^0.12.9",
+        "phpstan/phpstan-phpunit": "^0.12.17",
+        "psalm/plugin-phpunit": "^0.15.1",
+        "friendsofphp/php-cs-fixer": "^2.18"
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse -l max -c phpstan.neon src --memory-limit 192M --ansi",
+        "psalm": "psalm --show-info=true",
+        "phpunit": "phpunit --coverage-text",
+        "phpcs": "php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi",
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@psalm",
+            "@phpcs"
+        ]
+    },
+    "scripts-descriptions": {
+        "phpstan": "Runs complete codebase static analysis",
+        "psalm": "Runs complete codebase static analysis",
+        "phpunit": "Runs unit and functional testing",
+        "phpcs": "Runs coding style testing",
+        "test": "Runs all tests"
+    }
+}
