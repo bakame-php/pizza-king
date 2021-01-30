@@ -1,6 +1,8 @@
 Pizza King
 ----
 
+[![Build Status](https://github.com/bakame-php/pizza-king/workflows/build/badge.svg)](https://github.com/bakame-php/pizza-king/actions?query=workflow%3A%22build%22)
+
 This is a fork of [mnapoli/ pizza-king](https://github.com/mnapoli/pizza-king)
 
 This is a raw translation of the exercise in english:

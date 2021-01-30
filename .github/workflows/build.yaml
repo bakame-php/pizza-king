@@ -1,0 +1,27 @@
+---
+name: Build
+on:
+  push: ~
+  pull_request: ~
+
+jobs:
+  phpunit:
+    name: PHPUnit tests on ${{ matrix.php }} ${{ matrix.composer-flags }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '8.0' ]
+        composer-flags: [ '--ignore-platform-req=php' ]
+        phpunit-flags: [ '--coverage-text' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+          tools: composer:v2
+      - run: composer update --no-progress ${{ matrix.composer-flags }}
+      - run: vendor/bin/phpunit ${{ matrix.phpunit-flags }}
+      - run: vendor/bin/phpstan analyse -l max -c phpstan.neon src --ansi
+      - run: vendor/bin/psalm --show-info=true
+      - run: vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
