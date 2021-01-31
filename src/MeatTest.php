@@ -42,7 +42,7 @@ final class MeatTest extends TestCase
         $sauce = Meat::ham();
 
         self::assertSame('ham', $sauce->name());
-        self::assertEquals(Euro::fromCents(2_00), $sauce->price());
+        self::assertTrue($sauce->price()->equals(Euro::fromCents(2_00)));
     }
 
     /** @test */

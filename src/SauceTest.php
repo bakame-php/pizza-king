@@ -14,7 +14,7 @@ final class SauceTest extends TestCase
         $sauce = Sauce::tomato();
 
         self::assertSame('tomato', $sauce->name());
-        self::assertEquals(Euro::fromCents(1_00), $sauce->price());
+        self::assertTrue($sauce->price()->equals(Euro::fromCents(1_00)));
     }
 
     /** @test */
@@ -41,7 +41,7 @@ final class SauceTest extends TestCase
         $sauce = Sauce::cream();
 
         self::assertSame('cream', $sauce->name());
-        self::assertEquals(Euro::fromCents(1_00), $sauce->price());
+        self::assertTrue($sauce->price()->equals(Euro::fromCents(1_00)));
     }
 
     /** @test */
