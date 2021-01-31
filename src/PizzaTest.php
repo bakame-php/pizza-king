@@ -53,9 +53,9 @@ final class PizzaTest extends TestCase
         $cheese = Cheese::mozzarella();
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $pizzaExpensive = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
-        self::assertTrue($pizzaExpensive->basePrice()->equals(Euro::fromCents(10_00)));
-        self::assertTrue($pizzaExpensive->price()->equals(Euro::fromCents(10_00)));
+
         self::assertTrue($pizza->price()->equals(Euro::fromCents(8_00)));
+        self::assertTrue($pizzaExpensive->basePrice()->equals(Euro::fromCents(10_00)));
         self::assertTrue($pizzaExpensive->price()->equals(Euro::fromCents(14_00)));
         self::assertTrue($pizza->price()->lessThan($pizzaExpensive->price()));
     }

@@ -26,7 +26,7 @@ final class Pizza implements Dish
     ) {
         $this->meats = $meats;
         $price = $this->price();
-        if ($price->lessThan(Euro::fromCents(0))) {
+        if (0 > $price->cents()) {
             throw UnableToHandleIngredient::dueToWrongPrice($price, self::NAME);
         }
     }
