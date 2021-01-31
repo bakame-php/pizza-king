@@ -11,13 +11,13 @@ final class Meat implements Ingredient
 
     private Euro $price;
 
-    private function __construct(private string $name, Euro $unitPrice)
+    private function __construct(private string $name, Euro $price)
     {
-        if (0 > $unitPrice->cents()) {
-            throw UnableToHandleIngredient::dueToWrongPrice($unitPrice, $name);
+        if (0 > $price->cents()) {
+            throw UnableToHandleIngredient::dueToWrongPrice($price, $name);
         }
 
-        $this->price = $unitPrice;
+        $this->price = $price;
     }
 
     public static function ham(Euro $price = null): self
