@@ -18,9 +18,9 @@ final class Pizza implements Dish
     /** @var array<Meat> */
     private array $meats;
 
-    private function __construct(private Sauce $sauce, private Cheese $cheese, Meat ...$meat)
+    private function __construct(private Sauce $sauce, private Cheese $cheese, Meat ...$meats)
     {
-        $this->meats = $meat;
+        $this->meats = $meats;
     }
 
     public static function fromIngredientsName(string ...$names): self
@@ -101,23 +101,17 @@ final class Pizza implements Dish
         return $this->meats;
     }
 
-    public function ingredients(): iterable
+    public function ingredients(): array
     {
         return [$this->cheese, $this->sauce, ...$this->meats];
     }
 
     public function price(): Euro
     {
-        $meatPrice = array_reduce(
-            $this->meats,
-            fn (Euro $price, Meat $meat): Euro => $price->add($meat->price()),
-            Euro::fromCents(0)
+        return array_reduce(
+            $this->ingredients(),
+            fn (Euro $price, Ingredient $ingredient): Euro => $price->add($ingredient->price()),
+            Euro::fromCents(400)
         );
-
-        return Euro::fromCents(400)
-            ->add($this->sauce->price())
-            ->add($this->cheese->price())
-            ->add($meatPrice)
-        ;
     }
 }

@@ -7,7 +7,7 @@ namespace Bakame\PizzaKing;
 interface Dish extends Ingredient
 {
     /**
-     * @return iterable<Ingredient>
+     * @return array<Ingredient>
      */
-    public function ingredients(): iterable;
+    public function ingredients(): array;
 }
