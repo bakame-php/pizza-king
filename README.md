@@ -3,7 +3,10 @@ Pizza King
 
 [![Build Status](https://github.com/bakame-php/pizza-king/workflows/build/badge.svg)](https://github.com/bakame-php/pizza-king/actions?query=workflow%3A%22build%22)
 
-This is a fork of [mnapoli/ pizza-king](https://github.com/mnapoli/pizza-king)
+This is a possible implementation to [mnapoli/ pizza-king](https://github.com/mnapoli/pizza-king) exercise.
+
+The exercise
+-------
 
 This is a raw translation of the exercise in english:
 
@@ -46,10 +49,50 @@ This is a raw translation of the exercise in english:
 >
 > - use the maximum of PHP 8 unique features (my cousin told me it was better)
 
-```
-composer test
-```
+System Requirements
+-------
+
+You need:
+
+- **PHP8+** but the latest stable version of PHP is recommended
+
+Reference
+-------
+
+The following PHP features are used:
+
+#### PHP 8
+
+- [match expression](https://wiki.php.net/rfc/match_expression_v2)
+- [constructor promotion](https://wiki.php.net/rfc/constructor_promotion)
+
+#### PHP 7.4
+
+- [type properties](https://wiki.php.net/rfc/typed_properties_v2)
+- [numeric literal separator](https://wiki.php.net/rfc/numeric_literal_separator)
+- [arrow function](https://wiki.php.net/rfc/arrow_functions_v2)
+
+Example
+-------
+
+A simple example can be found by running
 
 ```
 make order
+```
+
+Testing
+-------
+
+`bakame/pizza-king` has:
+
+- a [PHPUnit](https://phpunit.de) test suite
+- a code analysis compliance test suite using [PHPStan](https://phpstan.org).
+- a code analysis compliance test suite using [Psalm](https://psalm.dev).
+- a coding style compliance test suite using [PHP CS Fixer](https://cs.symfony.com).
+
+To run the tests, run the following command from the project folder.
+
+``` bash
+$ composer test
 ```
