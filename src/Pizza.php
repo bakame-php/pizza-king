@@ -23,7 +23,7 @@ final class Pizza implements Dish
         $this->meats = $meats;
     }
 
-    public static function fromIngredientsName(string ...$names): self
+    public static function fromIngredientsByName(string ...$names): self
     {
         $converter = fn (string $name): Ingredient => match (strtolower($name)) {
             Cheese::MOZZARELLA => Cheese::mozzarella(),

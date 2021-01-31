@@ -22,12 +22,12 @@ final class Cheese implements Ingredient
 
     public static function goat(Euro $price = null): self
     {
-        return new self(self::GOAT, $price ?? Euro::fromCents(200));
+        return new self(self::GOAT, $price ?? Euro::fromCents(2_00));
     }
 
     public static function mozzarella(Euro $price = null): self
     {
-        return new self(self::MOZZARELLA, $price ?? Euro::fromCents(300));
+        return new self(self::MOZZARELLA, $price ?? Euro::fromCents(3_00));
     }
 
     public function name(): string

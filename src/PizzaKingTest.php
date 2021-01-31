@@ -13,7 +13,7 @@ final class PizzaKingTest extends TestCase
      */
     public function createPizza(array $ingredients): Pizza
     {
-        return Pizza::fromIngredientsName(...$ingredients);
+        return Pizza::fromIngredientsByName(...$ingredients);
     }
 
     public function testReine(): void
@@ -21,7 +21,10 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['sauce tomate', 'jambon', 'mozzarella']);
 
         self::assertCount(3, $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(1000), $pizza->price());
+        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
+        self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(10_00), $pizza->price());
     }
 
     public function testNapolitana(): void
@@ -29,7 +32,9 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['sauce tomate', 'mozzarella']);
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(800), $pizza->price());
+        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
     }
 
     public function testChevre(): void
@@ -37,7 +42,9 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['chevre', 'tomato']);
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(700), $pizza->price());
+        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::goat(), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(7_00), $pizza->price());
     }
 
     public function testCarnivore(): void
@@ -45,7 +52,11 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['creme', 'mozzarella', 'jambon', 'pepperoni']);
 
         self::assertCount(4, $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(1400), $pizza->price());
+        self::assertContainsEquals(Sauce::cream(), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
+        self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
+        self::assertContainsEquals(Meat::pepperoni(), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(14_00), $pizza->price());
     }
 
     // Manque la sauce !

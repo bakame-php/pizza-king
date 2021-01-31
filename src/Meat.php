@@ -22,12 +22,12 @@ final class Meat implements Ingredient
 
     public static function ham(Euro $price = null): self
     {
-        return new self(self::HAM, $price ?? Euro::fromCents(200));
+        return new self(self::HAM, $price ?? Euro::fromCents(2_00));
     }
 
     public static function pepperoni(Euro $price = null): self
     {
-        return new self(self::PEPPERONI, $price ?? Euro::fromCents(400));
+        return new self(self::PEPPERONI, $price ?? Euro::fromCents(4_00));
     }
 
     public function name(): string

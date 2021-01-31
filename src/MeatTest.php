@@ -20,7 +20,7 @@ final class MeatTest extends TestCase
     /** @test */
     public function it_can_create_pepperoni_meat_with_specified_price(): void
     {
-        $price = Euro::fromCents(1000);
+        $price = Euro::fromCents(10_00);
         $sauce = Meat::pepperoni($price);
 
         self::assertSame('pepperoni', $sauce->name());
@@ -42,13 +42,13 @@ final class MeatTest extends TestCase
         $sauce = Meat::ham();
 
         self::assertSame('ham', $sauce->name());
-        self::assertEquals(Euro::fromCents(200), $sauce->price());
+        self::assertEquals(Euro::fromCents(2_00), $sauce->price());
     }
 
     /** @test */
     public function it_can_create_ham_meat_with_specified_unit_price(): void
     {
-        $price = Euro::fromCents(400);
+        $price = Euro::fromCents(4_00);
         $sauce = Meat::ham($price);
 
         self::assertSame('ham', $sauce->name());

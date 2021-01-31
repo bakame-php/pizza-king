@@ -22,12 +22,12 @@ final class Sauce implements Ingredient
 
     public static function tomato(Euro $price = null): self
     {
-        return new self(self::TOMATO, $price ?? Euro::fromCents(100));
+        return new self(self::TOMATO, $price ?? Euro::fromCents(1_00));
     }
 
     public static function cream(Euro $price = null): self
     {
-        return new self(self::CREAM, $price ?? Euro::fromCents(100));
+        return new self(self::CREAM, $price ?? Euro::fromCents(1_00));
     }
 
     public function name(): string

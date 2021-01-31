@@ -14,13 +14,13 @@ final class CheeseTest extends TestCase
         $cheese = Cheese::mozzarella();
 
         self::assertSame('mozzarella', $cheese->name());
-        self::assertEquals(Euro::fromCents(300), $cheese->price());
+        self::assertEquals(Euro::fromCents(3_00), $cheese->price());
     }
 
     /** @test */
     public function it_can_create_mozzarella_cheese_with_specified_price(): void
     {
-        $price = Euro::fromCents(600);
+        $price = Euro::fromCents(6_00);
         $cheese = Cheese::mozzarella($price);
 
         self::assertSame('mozzarella', $cheese->name());
@@ -41,13 +41,13 @@ final class CheeseTest extends TestCase
         $cheese = Cheese::goat();
 
         self::assertSame('goat', $cheese->name());
-        self::assertEquals(Euro::fromCents(200), $cheese->price());
+        self::assertEquals(Euro::fromCents(2_00), $cheese->price());
     }
 
     /** @test */
     public function it_can_create_goat_cheese_with_specified_price(): void
     {
-        $price = Euro::fromCents(600);
+        $price = Euro::fromCents(6_00);
         $cheese = Cheese::goat($price);
 
         self::assertSame('goat', $cheese->name());

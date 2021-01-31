@@ -20,7 +20,7 @@ final class PizzaTest extends TestCase
         self::assertSame($sauce, $pizza->sauce());
         self::assertSame($cheese, $pizza->cheese());
         self::assertSame([$meat], $pizza->meats());
-        self::assertEquals(Euro::fromCents(1200), $pizza->price());
+        self::assertEquals(Euro::fromCents(12_00), $pizza->price());
 
         $ingredients = $pizza->ingredients();
 
@@ -42,7 +42,7 @@ final class PizzaTest extends TestCase
         self::assertSame($sauce, $pizza->sauce());
         self::assertSame($cheese, $pizza->cheese());
         self::assertEquals([], $pizza->meats());
-        self::assertEquals(Euro::fromCents(800), $pizza->price());
+        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
     }
 
     /** @test */
@@ -50,7 +50,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('mozzarella', 'jambon');
+        Pizza::fromIngredientsByName('mozzarella', 'jambon');
     }
 
     /** @test */
@@ -58,7 +58,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('tomato', 'cream', 'jambon', 'mozzarella');
+        Pizza::fromIngredientsByName('tomato', 'cream', 'jambon', 'mozzarella');
     }
 
     /** @test */
@@ -66,7 +66,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('tomato', 'jambon');
+        Pizza::fromIngredientsByName('tomato', 'jambon');
     }
 
     /** @test */
@@ -74,7 +74,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('tomato', 'jambon', 'mozzarella', 'goat');
+        Pizza::fromIngredientsByName('tomato', 'jambon', 'mozzarella', 'goat');
     }
 
     /** @test */
@@ -82,7 +82,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('tomato', 'mozzarella', 'jambon', 'jambon', 'pepperoni');
+        Pizza::fromIngredientsByName('tomato', 'mozzarella', 'jambon', 'jambon', 'pepperoni');
     }
 
     /** @test */
@@ -90,7 +90,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsName('tomato', 'mozzarella', 'foobar', 'jambon', 'pepperoni');
+        Pizza::fromIngredientsByName('tomato', 'mozzarella', 'foobar', 'jambon', 'pepperoni');
     }
 
     /** @test */
