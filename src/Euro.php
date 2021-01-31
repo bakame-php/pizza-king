@@ -46,4 +46,24 @@ final class Euro
     {
         return new self($this->cents * $multiplier);
     }
+
+    public function compare(Euro $money): int
+    {
+        return $this->cents <=> $money->cents;
+    }
+
+    public function equals(Euro $money): bool
+    {
+        return 0 === $this->compare($money);
+    }
+
+    public function greaterThan(Euro $money): bool
+    {
+        return 1 === $this->compare($money);
+    }
+
+    public function lessThan(Euro $money): bool
+    {
+        return -1 === $this->compare($money);
+    }
 }
