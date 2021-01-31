@@ -18,12 +18,23 @@ final class Pizza implements Dish
     /** @var array<Meat> */
     private array $meats;
 
-    private function __construct(private Sauce $sauce, private Cheese $cheese, Meat ...$meats)
-    {
+    private function __construct(
+        private Euro $basePrice,
+        private Sauce $sauce,
+        private Cheese $cheese,
+        Meat ...$meats
+    ) {
         $this->meats = $meats;
+        $price = $this->price();
+        if ($price->lessThan(Euro::fromCents(0))) {
+            throw UnableToHandleIngredient::dueToWrongPrice($price, self::NAME);
+        }
     }
 
-    public static function fromIngredientsByName(string ...$names): self
+    /**
+     * @param array<string> $names
+     */
+    public static function fromIngredientsByName(array $names, Euro $basePrice = null): self
     {
         $converter = fn (string $name): Ingredient => match (strtolower($name)) {
             Cheese::MOZZARELLA => Cheese::mozzarella(),
@@ -35,11 +46,16 @@ final class Pizza implements Dish
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
         };
 
-        return self::fromIngredients(...array_map($converter, $names));
+        return self::fromIngredients(array_map($converter, $names), $basePrice);
     }
 
-    public static function fromIngredients(Ingredient ...$ingredients): self
+    /**
+     * @param array<Ingredient> $ingredients
+     */
+    public static function fromIngredients(array $ingredients, Euro $basePrice = null): self
     {
+        $basePrice = $basePrice ?? Euro::fromCents(4_00);
+
         /** @var Cheese[] $cheeses */
         $cheeses = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
         $nbCheese = count($cheeses);
@@ -72,8 +88,8 @@ final class Pizza implements Dish
         };
 
         return match ($nbMeat) {
-            0 => new self($sauce, $cheese),
-            1, 2 => new self($sauce, $cheese, ...$meats),
+            0 => new self($basePrice, $sauce, $cheese),
+            1, 2 => new self($basePrice, $sauce, $cheese, ...$meats),
             default => throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats'),
         };
     }
@@ -106,12 +122,17 @@ final class Pizza implements Dish
         return [$this->cheese, $this->sauce, ...$this->meats];
     }
 
+    public function basePrice(): Euro
+    {
+        return $this->basePrice;
+    }
+
     public function price(): Euro
     {
         return array_reduce(
             $this->ingredients(),
             fn (Euro $price, Ingredient $ingredient): Euro => $price->add($ingredient->price()),
-            Euro::fromCents(400)
+            $this->basePrice
         );
     }
 }

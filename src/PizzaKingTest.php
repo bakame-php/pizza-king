@@ -13,7 +13,7 @@ final class PizzaKingTest extends TestCase
      */
     public function createPizza(array $ingredients): Pizza
     {
-        return Pizza::fromIngredientsByName(...$ingredients);
+        return Pizza::fromIngredientsByName($ingredients);
     }
 
     public function testReine(): void
@@ -24,7 +24,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
         self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
         self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(10_00), $pizza->price());
+        self::assertTrue($pizza->price()->equals(Euro::fromCents(10_00)));
     }
 
     public function testNapolitana(): void
@@ -34,7 +34,7 @@ final class PizzaKingTest extends TestCase
         self::assertCount(2, $pizza->ingredients());
         self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
         self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
+        self::assertTrue($pizza->price()->equals(Euro::fromCents(8_00)));
     }
 
     public function testChevre(): void
@@ -44,7 +44,7 @@ final class PizzaKingTest extends TestCase
         self::assertCount(2, $pizza->ingredients());
         self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
         self::assertContainsEquals(Cheese::goat(), $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(7_00), $pizza->price());
+        self::assertTrue($pizza->price()->equals(Euro::fromCents(7_00)));
     }
 
     public function testCarnivore(): void
@@ -56,7 +56,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
         self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
         self::assertContainsEquals(Meat::pepperoni(), $pizza->ingredients());
-        self::assertEquals(Euro::fromCents(14_00), $pizza->price());
+        self::assertTrue($pizza->price()->equals(Euro::fromCents(14_00)));
     }
 
     // Manque la sauce !

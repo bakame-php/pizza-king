@@ -6,6 +6,8 @@ namespace Bakame\PizzaKing;
 
 interface Dish extends Ingredient
 {
+    public function basePrice(): Euro;
+
     /**
      * @return array<Ingredient>
      */
