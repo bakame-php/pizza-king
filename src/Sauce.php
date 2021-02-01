@@ -4,10 +4,23 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing;
 
+use function strtolower;
+
 final class Sauce implements Ingredient
 {
-    public const TOMATO = 'tomato';
-    public const CREAM = 'cream';
+    private const TOMATO = 'tomato';
+    private const CREAM = 'cream';
+    private const I18N = [
+        self::TOMATO => self::TOMATO,
+        'sauce tomate' => self::TOMATO,
+        self::CREAM => self::CREAM,
+        'creme' => self::CREAM,
+    ];
+
+    private const PRICES = [
+        self::TOMATO => 1_00,
+        self::CREAM => 1_00,
+    ];
 
     private Euro $price;
 
@@ -20,14 +33,20 @@ final class Sauce implements Ingredient
         $this->price = $price;
     }
 
-    public static function tomato(Euro $price = null): self
+    public static function isKnownVariety(string $name): bool
     {
-        return new self(self::TOMATO, $price ?? Euro::fromCents(1_00));
+        return isset(self::I18N[strtolower($name)]);
     }
 
-    public static function cream(Euro $price = null): self
+    public static function fromVariety(string $name, Euro $price = null): self
     {
-        return new self(self::CREAM, $price ?? Euro::fromCents(1_00));
+        if (!self::isKnownVariety($name)) {
+            throw UnableToHandleIngredient::dueToUnknownIngredient($name);
+        }
+
+        $variety = self::I18N[strtolower($name)];
+
+        return new self($variety, $price ?? Euro::fromCents(self::PRICES[$variety]));
     }
 
     public function name(): string

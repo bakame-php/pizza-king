@@ -11,7 +11,7 @@ final class CheeseTest extends TestCase
     /** @test */
     public function it_can_create_mozzarella_cheese(): void
     {
-        $cheese = Cheese::mozzarella();
+        $cheese = Cheese::fromVariety('mozzarella');
 
         self::assertSame('mozzarella', $cheese->name());
         self::assertEquals(Euro::fromCents(3_00), $cheese->price());
@@ -21,24 +21,32 @@ final class CheeseTest extends TestCase
     public function it_can_create_mozzarella_cheese_with_specified_price(): void
     {
         $price = Euro::fromCents(6_00);
-        $cheese = Cheese::mozzarella($price);
+        $cheese = Cheese::fromVariety('mozzarella', $price);
 
         self::assertSame('mozzarella', $cheese->name());
         self::assertSame($price, $cheese->price());
     }
 
     /** @test */
-    public function it_fails_creating_a_mozzarella_cheese_with_invalid_price(): void
+    public function it_fails_creating_a_cheese_with_invalid_price(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Cheese::mozzarella(Euro::fromCents(-1));
+        Cheese::fromVariety('mozzarella', Euro::fromCents(-1));
+    }
+
+    /** @test */
+    public function it_fails_creating_a_cheese_with_invalid_variety(): void
+    {
+        $this->expectException(UnableToHandleIngredient::class);
+
+        Cheese::fromVariety('mascarpone', Euro::fromCents(2_00));
     }
 
     /** @test */
     public function it_can_create_goat_cheese(): void
     {
-        $cheese = Cheese::goat();
+        $cheese = Cheese::fromVariety('goat');
 
         self::assertSame('goat', $cheese->name());
         self::assertEquals(Euro::fromCents(2_00), $cheese->price());
@@ -48,17 +56,9 @@ final class CheeseTest extends TestCase
     public function it_can_create_goat_cheese_with_specified_price(): void
     {
         $price = Euro::fromCents(6_00);
-        $cheese = Cheese::goat($price);
+        $cheese = Cheese::fromVariety('goat', $price);
 
         self::assertSame('goat', $cheese->name());
         self::assertSame($price, $cheese->price());
-    }
-
-    /** @test */
-    public function it_fails_creating_a_goat_cheese_with_invalid_price(): void
-    {
-        $this->expectException(UnableToHandleIngredient::class);
-
-        Cheese::goat(Euro::fromCents(-1));
     }
 }

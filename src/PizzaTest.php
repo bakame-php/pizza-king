@@ -11,9 +11,9 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza(): void
     {
-        $sauce = Sauce::tomato();
-        $cheese = Cheese::mozzarella();
-        $meat = Meat::pepperoni();
+        $sauce = Sauce::fromVariety('tomato');
+        $cheese = Cheese::fromVariety('mozzarella');
+        $meat = Meat::fromVariety('pepperoni');
         $pizza = Pizza::fromIngredients([$sauce, $cheese, $meat]);
 
         self::assertSame('pizza', $pizza->name());
@@ -35,8 +35,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_without_meat(): void
     {
-        $sauce = Sauce::tomato();
-        $cheese = Cheese::mozzarella();
+        $sauce = Sauce::fromVariety('tomato');
+        $cheese = Cheese::fromVariety('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
 
         self::assertSame('pizza', $pizza->name());
@@ -49,8 +49,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_with_a_difference_base_price(): void
     {
-        $sauce = Sauce::tomato();
-        $cheese = Cheese::mozzarella();
+        $sauce = Sauce::fromVariety('tomato');
+        $cheese = Cheese::fromVariety('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $pizzaExpensive = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
 
@@ -65,7 +65,10 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`pizza` can not be priced at `-1.00 EUR`.');
 
-        Pizza::fromIngredients([Sauce::tomato(), Cheese::mozzarella()], Euro::fromCents(-5_00));
+        Pizza::fromIngredients(
+            [Sauce::fromVariety('tomato'), Cheese::fromVariety('mozzarella')],
+            Euro::fromCents(-5_00)
+        );
     }
 
     /** @test */
@@ -125,6 +128,10 @@ final class PizzaTest extends TestCase
         $ananas->method('name')->willReturn('ananas');
         $ananas->method('price')->willReturn(Euro::fromCents(30_00));
 
-        Pizza::fromIngredients([Cheese::goat(), Sauce::tomato(), $ananas]);
+        Pizza::fromIngredients([
+            Cheese::fromVariety('chevre'),
+            Sauce::fromVariety('sauce TomAte'),
+            $ananas,
+        ]);
     }
 }

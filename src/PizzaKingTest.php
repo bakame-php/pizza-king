@@ -21,9 +21,9 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['sauce tomate', 'jambon', 'mozzarella']);
 
         self::assertCount(3, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
-        self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromVariety('sauce tomate'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromVariety('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromVariety('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(10_00), $pizza->price());
     }
 
@@ -32,8 +32,8 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['sauce tomate', 'mozzarella']);
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromVariety('sauce tomate'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromVariety('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
     }
 
@@ -42,8 +42,8 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['chevre', 'tomato']);
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::tomato(), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::goat(), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromVariety('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromVariety('chevre'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(7_00), $pizza->price());
     }
 
@@ -52,10 +52,10 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->createPizza(['creme', 'mozzarella', 'jambon', 'pepperoni']);
 
         self::assertCount(4, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::cream(), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::mozzarella(), $pizza->ingredients());
-        self::assertContainsEquals(Meat::ham(), $pizza->ingredients());
-        self::assertContainsEquals(Meat::pepperoni(), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromVariety('creme'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromVariety('mozzarella'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromVariety('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromVariety('pepperoni'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(14_00), $pizza->price());
     }
 

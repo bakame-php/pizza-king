@@ -9,7 +9,6 @@ use function array_map;
 use function array_reduce;
 use function count;
 use function reset;
-use function strtolower;
 
 final class Pizza implements Dish
 {
@@ -41,13 +40,10 @@ final class Pizza implements Dish
      */
     public static function fromIngredientsByName(array $names, Euro $basePrice = null): self
     {
-        $converter = fn (string $name): Ingredient => match (strtolower($name)) {
-            Cheese::MOZZARELLA => Cheese::mozzarella(),
-            Cheese::GOAT, 'chevre' => Cheese::goat(),
-            Sauce::TOMATO, 'sauce tomate' => Sauce::tomato(),
-            Sauce::CREAM, 'creme' => Sauce::cream(),
-            Meat::PEPPERONI => Meat::pepperoni(),
-            Meat::HAM, 'jambon' => Meat::ham(),
+        $converter = fn (string $name): Ingredient => match (true) {
+            Cheese::isKnownVariety($name) => Cheese::fromVariety($name),
+            Sauce::isKnownVariety($name) => Sauce::fromVariety($name),
+            Meat::isKnownVariety($name) => Meat::fromVariety($name),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
         };
 
