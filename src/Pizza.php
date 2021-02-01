@@ -14,6 +14,8 @@ final class Pizza implements Dish
 {
     private const NAME = 'pizza';
 
+    private const DEFAULT_PRICE = 4_00;
+
     /** @var array<Meat> */
     private array $meats;
 
@@ -41,9 +43,9 @@ final class Pizza implements Dish
     public static function fromIngredientsByName(array $names, Euro $basePrice = null): self
     {
         $converter = fn (string $name): Ingredient => match (true) {
-            Cheese::isKnownVariety($name) => Cheese::fromVariety($name),
-            Sauce::isKnownVariety($name) => Sauce::fromVariety($name),
-            Meat::isKnownVariety($name) => Meat::fromVariety($name),
+            Cheese::isKnown($name) => Cheese::fromName($name),
+            Sauce::isKnown($name) => Sauce::fromName($name),
+            Meat::isKnown($name) => Meat::fromName($name),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
         };
 
@@ -55,7 +57,7 @@ final class Pizza implements Dish
      */
     public static function fromIngredients(array $ingredients, Euro $basePrice = null): self
     {
-        $basePrice = $basePrice ?? Euro::fromCents(4_00);
+        $basePrice = $basePrice ?? Euro::fromCents(self::DEFAULT_PRICE);
 
         /** @var Cheese[] $cheeses */
         $cheeses = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);

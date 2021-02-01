@@ -11,9 +11,9 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza(): void
     {
-        $sauce = Sauce::fromVariety('tomato');
-        $cheese = Cheese::fromVariety('mozzarella');
-        $meat = Meat::fromVariety('pepperoni');
+        $sauce = Sauce::fromName('tomato');
+        $cheese = Cheese::fromName('mozzarella');
+        $meat = Meat::fromName('pepperoni');
         $pizza = Pizza::fromIngredients([$sauce, $cheese, $meat]);
 
         self::assertSame('pizza', $pizza->name());
@@ -35,8 +35,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_without_meat(): void
     {
-        $sauce = Sauce::fromVariety('tomato');
-        $cheese = Cheese::fromVariety('mozzarella');
+        $sauce = Sauce::fromName('tomato');
+        $cheese = Cheese::fromName('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
 
         self::assertSame('pizza', $pizza->name());
@@ -49,8 +49,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_with_a_difference_base_price(): void
     {
-        $sauce = Sauce::fromVariety('tomato');
-        $cheese = Cheese::fromVariety('mozzarella');
+        $sauce = Sauce::fromName('tomato');
+        $cheese = Cheese::fromName('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $pizzaExpensive = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
 
@@ -66,7 +66,7 @@ final class PizzaTest extends TestCase
         $this->expectExceptionMessage('`pizza` can not be priced at `-1.00 EUR`.');
 
         Pizza::fromIngredients(
-            [Sauce::fromVariety('tomato'), Cheese::fromVariety('mozzarella')],
+            [Sauce::fromName('tomato'), Cheese::fromName('mozzarella')],
             Euro::fromCents(-5_00)
         );
     }
@@ -129,8 +129,8 @@ final class PizzaTest extends TestCase
         $ananas->method('price')->willReturn(Euro::fromCents(30_00));
 
         Pizza::fromIngredients([
-            Cheese::fromVariety('chevre'),
-            Sauce::fromVariety('sauce TomAte'),
+            Cheese::fromName('chevre'),
+            Sauce::fromName('sauce TomAte'),
             $ananas,
         ]);
     }

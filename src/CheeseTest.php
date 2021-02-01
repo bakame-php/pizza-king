@@ -11,7 +11,7 @@ final class CheeseTest extends TestCase
     /** @test */
     public function it_can_create_mozzarella_cheese(): void
     {
-        $cheese = Cheese::fromVariety('mozzarella');
+        $cheese = Cheese::fromName('mozzarella');
 
         self::assertSame('mozzarella', $cheese->name());
         self::assertEquals(Euro::fromCents(3_00), $cheese->price());
@@ -21,7 +21,7 @@ final class CheeseTest extends TestCase
     public function it_can_create_mozzarella_cheese_with_specified_price(): void
     {
         $price = Euro::fromCents(6_00);
-        $cheese = Cheese::fromVariety('mozzarella', $price);
+        $cheese = Cheese::fromName('mozzarella', $price);
 
         self::assertSame('mozzarella', $cheese->name());
         self::assertSame($price, $cheese->price());
@@ -32,7 +32,7 @@ final class CheeseTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Cheese::fromVariety('mozzarella', Euro::fromCents(-1));
+        Cheese::fromName('mozzarella', Euro::fromCents(-1));
     }
 
     /** @test */
@@ -40,13 +40,13 @@ final class CheeseTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Cheese::fromVariety('mascarpone', Euro::fromCents(2_00));
+        Cheese::fromName('mascarpone', Euro::fromCents(2_00));
     }
 
     /** @test */
     public function it_can_create_goat_cheese(): void
     {
-        $cheese = Cheese::fromVariety('goat');
+        $cheese = Cheese::fromName('goat');
 
         self::assertSame('goat', $cheese->name());
         self::assertEquals(Euro::fromCents(2_00), $cheese->price());
@@ -56,7 +56,7 @@ final class CheeseTest extends TestCase
     public function it_can_create_goat_cheese_with_specified_price(): void
     {
         $price = Euro::fromCents(6_00);
-        $cheese = Cheese::fromVariety('goat', $price);
+        $cheese = Cheese::fromName('goat', $price);
 
         self::assertSame('goat', $cheese->name());
         self::assertSame($price, $cheese->price());

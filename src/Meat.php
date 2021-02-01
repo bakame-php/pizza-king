@@ -32,14 +32,14 @@ final class Meat implements Ingredient
         $this->price = $price;
     }
 
-    public static function isKnownVariety(string $name): bool
+    public static function isKnown(string $name): bool
     {
         return isset(self::I18N[strtolower($name)]);
     }
 
-    public static function fromVariety(string $name, Euro $price = null): self
+    public static function fromName(string $name, Euro $price = null): self
     {
-        if (!self::isKnownVariety($name)) {
+        if (!self::isKnown($name)) {
             throw UnableToHandleIngredient::dueToUnknownIngredient($name);
         }
 
