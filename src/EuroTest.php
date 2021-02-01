@@ -35,16 +35,4 @@ final class EuroTest extends TestCase
     {
         self::assertEquals(Euro::fromCents(50), Euro::fromCents(10)->multiply(5));
     }
-
-    /** @test */
-    public function it_can_be_compare_with_each_other(): void
-    {
-        $money1 = Euro::fromCents(50);
-        $money2 = Euro::fromCents(1_00);
-        $money3 = Euro::fromCents(1_00);
-
-        self::assertTrue($money1->lessThan($money2));
-        self::assertTrue($money2->greaterThan($money1));
-        self::assertTrue($money3->equals($money2));
-    }
 }

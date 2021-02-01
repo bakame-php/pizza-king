@@ -24,6 +24,11 @@ final class Pizza implements Dish
         private Cheese $cheese,
         Meat ...$meats
     ) {
+        $nbMeat = count($meats);
+        if (2 < $nbMeat) {
+            throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats');
+        }
+
         $this->meats = $meats;
         $price = $this->price();
         if (0 > $price->cents()) {
@@ -87,11 +92,7 @@ final class Pizza implements Dish
             default => throw UnableToHandleIngredient::dueToWrongQuantity($nbSauce, 'sauce'),
         };
 
-        return match ($nbMeat) {
-            0 => new self($basePrice, $sauce, $cheese),
-            1, 2 => new self($basePrice, $sauce, $cheese, ...$meats),
-            default => throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats'),
-        };
+        return new self($basePrice, $sauce, $cheese, ...$meats);
     }
 
     public function name(): string

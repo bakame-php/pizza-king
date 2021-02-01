@@ -14,7 +14,7 @@ final class CheeseTest extends TestCase
         $cheese = Cheese::mozzarella();
 
         self::assertSame('mozzarella', $cheese->name());
-        self::assertTrue($cheese->price()->equals(Euro::fromCents(3_00)));
+        self::assertEquals(Euro::fromCents(3_00), $cheese->price());
     }
 
     /** @test */
@@ -41,7 +41,7 @@ final class CheeseTest extends TestCase
         $cheese = Cheese::goat();
 
         self::assertSame('goat', $cheese->name());
-        self::assertTrue($cheese->price()->equals(Euro::fromCents(2_00)));
+        self::assertEquals(Euro::fromCents(2_00), $cheese->price());
     }
 
     /** @test */

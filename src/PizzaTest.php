@@ -20,8 +20,8 @@ final class PizzaTest extends TestCase
         self::assertSame($sauce, $pizza->sauce());
         self::assertSame($cheese, $pizza->cheese());
         self::assertSame([$meat], $pizza->meats());
-        self::assertTrue($pizza->price()->equals(Euro::fromCents(12_00)));
-        self::assertTrue($pizza->basePrice()->equals(Euro::fromCents(4_00)));
+        self::assertEquals(Euro::fromCents(12_00), $pizza->price());
+        self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
 
         $ingredients = $pizza->ingredients();
 
@@ -43,7 +43,7 @@ final class PizzaTest extends TestCase
         self::assertSame($sauce, $pizza->sauce());
         self::assertSame($cheese, $pizza->cheese());
         self::assertEquals([], $pizza->meats());
-        self::assertTrue($pizza->price()->equals(Euro::fromCents(8_00)));
+        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
     }
 
     /** @test */
@@ -54,10 +54,9 @@ final class PizzaTest extends TestCase
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $pizzaExpensive = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
 
-        self::assertTrue($pizza->price()->equals(Euro::fromCents(8_00)));
-        self::assertTrue($pizzaExpensive->basePrice()->equals(Euro::fromCents(10_00)));
-        self::assertTrue($pizzaExpensive->price()->equals(Euro::fromCents(14_00)));
-        self::assertTrue($pizza->price()->lessThan($pizzaExpensive->price()));
+        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
+        self::assertEquals(Euro::fromCents(10_00), $pizzaExpensive->basePrice());
+        self::assertEquals(Euro::fromCents(14_00), $pizzaExpensive->price());
     }
 
     /** @test */
