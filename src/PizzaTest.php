@@ -15,16 +15,11 @@ final class PizzaTest extends TestCase
         $cheese = Cheese::fromName('mozzarella');
         $meat = Meat::fromName('pepperoni');
         $pizza = Pizza::fromIngredients([$sauce, $cheese, $meat]);
-
-        self::assertSame('pizza', $pizza->name());
-        self::assertSame($sauce, $pizza->sauce());
-        self::assertSame($cheese, $pizza->cheese());
-        self::assertSame([$meat], $pizza->meats());
-        self::assertEquals(Euro::fromCents(12_00), $pizza->price());
-        self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
-
         $ingredients = $pizza->ingredients();
 
+        self::assertSame('pizza', $pizza->name());
+        self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
+        self::assertEquals(Euro::fromCents(12_00), $pizza->price());
         self::assertContainsOnlyInstancesOf(Ingredient::class, $ingredients);
         self::assertContains($cheese, $ingredients);
         self::assertContains($sauce, $ingredients);
@@ -38,11 +33,10 @@ final class PizzaTest extends TestCase
         $sauce = Sauce::fromName('tomato');
         $cheese = Cheese::fromName('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
-
-        self::assertSame('pizza', $pizza->name());
-        self::assertSame($sauce, $pizza->sauce());
-        self::assertSame($cheese, $pizza->cheese());
-        self::assertEquals([], $pizza->meats());
+        $ingredients = $pizza->ingredients();
+        self::assertCount(2, $ingredients);
+        self::assertContains($cheese, $ingredients);
+        self::assertContains($sauce, $ingredients);
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
     }
 
@@ -52,11 +46,11 @@ final class PizzaTest extends TestCase
         $sauce = Sauce::fromName('tomato');
         $cheese = Cheese::fromName('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
-        $pizzaExpensive = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
-
+        $altPizza = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
+        self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
-        self::assertEquals(Euro::fromCents(10_00), $pizzaExpensive->basePrice());
-        self::assertEquals(Euro::fromCents(14_00), $pizzaExpensive->price());
+        self::assertEquals(Euro::fromCents(10_00), $altPizza->basePrice());
+        self::assertEquals(Euro::fromCents(14_00), $altPizza->price());
     }
 
     /** @test */
@@ -75,6 +69,7 @@ final class PizzaTest extends TestCase
     public function it_fails_to_compose_a_pizza_without_sauce(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`sauce` is missing.');
 
         Pizza::fromIngredientsByName(['jambon', 'mozzarella']);
     }
@@ -83,14 +78,16 @@ final class PizzaTest extends TestCase
     public function it_fails_to_compose_a_pizza_with_too_much_sauce(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`sauce` can not be used with the following quantity `2`.');
 
-        Pizza::fromIngredientsByName(['cream', 'tomato']);
+        Pizza::fromIngredientsByName(['cream', 'tomato', 'goat']);
     }
 
     /** @test */
     public function it_fails_to_compose_a_pizza_without_cheese(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`cheese` is missing.');
 
         Pizza::fromIngredientsByName(['jambon', 'tomato']);
     }
@@ -99,14 +96,16 @@ final class PizzaTest extends TestCase
     public function it_fails_to_compose_a_pizza_with_too_much_cheese(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`cheese` can not be used with the following quantity `2`.');
 
-        Pizza::fromIngredientsByName(['jambon', 'tomato']);
+        Pizza::fromIngredientsByName(['jambon', 'mozzarella', 'goat']);
     }
 
     /** @test */
     public function it_fails_to_compose_a_pizza_with_too_much_meat(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`meats` can not be used with the following quantity `3`.');
 
         Pizza::fromIngredientsByName(['mozzarella', 'tomato', 'jambon', 'pepperoni', 'pepperoni']);
     }

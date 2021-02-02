@@ -29,7 +29,7 @@ final class Euro
 
     public function toString(): string
     {
-        return sprintf('%.2f', ($this->cents / 100)).' '.$this->currency();
+        return sprintf('%.2f', $this->cents / 100).' '.$this->currency();
     }
 
     public function add(Euro $euro): self

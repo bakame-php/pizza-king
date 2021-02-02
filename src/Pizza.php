@@ -57,8 +57,6 @@ final class Pizza implements Dish
      */
     public static function fromIngredients(array $ingredients, Euro $basePrice = null): self
     {
-        $basePrice = $basePrice ?? Euro::fromCents(self::DEFAULT_PRICE);
-
         /** @var Cheese[] $cheeses */
         $cheeses = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
         $nbCheese = count($cheeses);
@@ -69,9 +67,8 @@ final class Pizza implements Dish
 
         /** @var Meat[] $meats */
         $meats = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Meat);
-        $nbMeat = count($meats);
 
-        if (($nbMeat + $nbCheese + $nbSauce) !== count($ingredients)) {
+        if (($nbCheese + $nbSauce + count($meats)) !== count($ingredients)) {
             throw UnableToHandleIngredient::dueToUnSupportedIngredient();
         }
 
@@ -90,30 +87,12 @@ final class Pizza implements Dish
             default => throw UnableToHandleIngredient::dueToWrongQuantity($nbSauce, 'sauce'),
         };
 
-        return new self($basePrice, $sauce, $cheese, ...$meats);
+        return new self($basePrice ?? Euro::fromCents(self::DEFAULT_PRICE), $sauce, $cheese, ...$meats);
     }
 
     public function name(): string
     {
         return self::NAME;
-    }
-
-    public function cheese(): Cheese
-    {
-        return $this->cheese;
-    }
-
-    public function sauce(): Sauce
-    {
-        return $this->sauce;
-    }
-
-    /**
-     * @return array<Meat>
-     */
-    public function meats(): array
-    {
-        return $this->meats;
     }
 
     public function ingredients(): array
