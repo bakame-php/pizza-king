@@ -22,14 +22,16 @@ final class Sauce implements Ingredient
         self::CREAM => 1_00,
     ];
 
+    private string $name;
     private Euro $price;
 
-    private function __construct(private string $name, Euro $price)
+    private function __construct(string $name, Euro $price)
     {
-        if ($price->cents() < 0) {
+        if (0 > $price->cents()) {
             throw UnableToHandleIngredient::dueToWrongPrice($price, $name);
         }
 
+        $this->name = strtolower($name);
         $this->price = $price;
     }
 
@@ -44,9 +46,7 @@ final class Sauce implements Ingredient
             throw UnableToHandleIngredient::dueToUnknownIngredient($name);
         }
 
-        $variety = self::I18N[strtolower($name)];
-
-        return new self($variety, $price ?? Euro::fromCents(self::PRICES[$variety]));
+        return new self($name, $price ?? Euro::fromCents(self::PRICES[self::I18N[strtolower($name)]]));
     }
 
     public function name(): string

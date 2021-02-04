@@ -47,9 +47,9 @@ final class MeatTest extends TestCase
     /** @test */
     public function it_can_create_ham_meat(): void
     {
-        $sauce = Meat::fromName('jambon');
+        $sauce = Meat::fromName('JaMbOn');
 
-        self::assertSame('ham', $sauce->name());
+        self::assertSame('jambon', $sauce->name());
         self::assertEquals(Euro::fromCents(2_00), $sauce->price());
     }
 
@@ -59,7 +59,7 @@ final class MeatTest extends TestCase
         $price = Euro::fromCents(4_00);
         $sauce = Meat::fromName('JAMBON', $price);
 
-        self::assertSame('ham', $sauce->name());
+        self::assertSame('jambon', $sauce->name());
         self::assertSame($price, $sauce->price());
     }
 }

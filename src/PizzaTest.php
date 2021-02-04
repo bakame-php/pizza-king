@@ -71,7 +71,7 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`sauce` is missing.');
 
-        Pizza::fromIngredientsByName(['jambon', 'mozzarella']);
+        Pizza::fromIngredientNames(['jambon', 'mozzarella']);
     }
 
     /** @test */
@@ -80,7 +80,7 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`sauce` can not be used with the following quantity `2`.');
 
-        Pizza::fromIngredientsByName(['cream', 'tomato', 'goat']);
+        Pizza::fromIngredientNames(['cream', 'tomato', 'goat']);
     }
 
     /** @test */
@@ -89,7 +89,7 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`cheese` is missing.');
 
-        Pizza::fromIngredientsByName(['jambon', 'tomato']);
+        Pizza::fromIngredientNames(['jambon', 'tomato']);
     }
 
     /** @test */
@@ -98,7 +98,7 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`cheese` can not be used with the following quantity `2`.');
 
-        Pizza::fromIngredientsByName(['jambon', 'mozzarella', 'goat']);
+        Pizza::fromIngredientNames(['jambon', 'mozzarella', 'goat']);
     }
 
     /** @test */
@@ -107,7 +107,7 @@ final class PizzaTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`meats` can not be used with the following quantity `3`.');
 
-        Pizza::fromIngredientsByName(['mozzarella', 'tomato', 'jambon', 'pepperoni', 'pepperoni']);
+        Pizza::fromIngredientNames(['mozzarella', 'tomato', 'jambon', 'pepperoni', 'pepperoni']);
     }
 
     /** @test */
@@ -115,7 +115,7 @@ final class PizzaTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Pizza::fromIngredientsByName(['mozzarella', 'tomato', 'ananas']);
+        Pizza::fromIngredientNames(['mozzarella', 'tomato', 'ananas']);
     }
 
     /** @test */

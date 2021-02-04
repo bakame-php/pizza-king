@@ -11,9 +11,11 @@
         "phpstan/phpstan-strict-rules": "^0.12.9",
         "phpstan/phpstan-phpunit": "^0.12.17",
         "psalm/plugin-phpunit": "^0.15.1",
-        "friendsofphp/php-cs-fixer": "^2.18"
+        "friendsofphp/php-cs-fixer": "^2.18",
+        "phpmd/phpmd": "^2.9"
     },
     "scripts": {
+        "phpmd": "phpmd src html phpmd.xml --exclude=vendor --ansi --reportfile build/phpmd.html",
         "phpstan": "phpstan analyse -l max -c phpstan.neon src --memory-limit 192M --ansi",
         "psalm": "psalm --show-info=true",
         "phpunit": "phpunit --coverage-text",
@@ -22,6 +24,7 @@
             "@phpunit",
             "@phpstan",
             "@psalm",
+            "@phpmd",
             "@phpcs"
         ]
     },

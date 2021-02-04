@@ -7,7 +7,7 @@ use Bakame\PizzaKing\Pizza;
 
 require 'vendor/autoload.php';
 
-$pizza = Pizza::fromIngredientsByName(['creme', 'mozzarella', 'jambon', 'pepperoni']);
+$pizza = Pizza::fromIngredientNames(['creme', 'mozzarella', 'jambon', 'pepperoni']);
 echo "The pizza ingredients are : ",
     implode(', ', array_map(fn (Ingredient $ingredient): string => $ingredient->name(), $pizza->ingredients())),
     PHP_EOL,

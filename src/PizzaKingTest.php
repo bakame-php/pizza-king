@@ -13,7 +13,7 @@ final class PizzaKingTest extends TestCase
      */
     public function createPizza(array $ingredients): Pizza
     {
-        return Pizza::fromIngredientsByName($ingredients);
+        return Pizza::fromIngredientNames($ingredients);
     }
 
     public function testReine(): void

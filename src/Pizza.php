@@ -40,7 +40,7 @@ final class Pizza implements Dish
     /**
      * @param array<string> $names
      */
-    public static function fromIngredientsByName(array $names, Euro $basePrice = null): self
+    public static function fromIngredientNames(array $names, Euro $basePrice = null): self
     {
         $converter = fn (string $name): Ingredient => match (true) {
             Cheese::isKnown($name) => Cheese::fromName($name),
@@ -59,15 +59,13 @@ final class Pizza implements Dish
     {
         /** @var Cheese[] $cheeses */
         $cheeses = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
-        $nbCheese = count($cheeses);
-
         /** @var Sauce[] $sauces */
         $sauces = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Sauce);
-        $nbSauce = count($sauces);
-
         /** @var Meat[] $meats */
         $meats = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Meat);
 
+        $nbCheese = count($cheeses);
+        $nbSauce = count($sauces);
         if (($nbCheese + $nbSauce + count($meats)) !== count($ingredients)) {
             throw UnableToHandleIngredient::dueToUnSupportedIngredient();
         }
