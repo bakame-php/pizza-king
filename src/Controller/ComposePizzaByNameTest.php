@@ -14,7 +14,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Response;
 
-final class ComposePizzaFromNameTest extends TestCase
+final class ComposePizzaByNameTest extends TestCase
 {
     /** @test */
     public function it_returns_the_price_of_a_pizza(): void
@@ -29,7 +29,7 @@ final class ComposePizzaFromNameTest extends TestCase
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('carnivore');
 
-        $controller = new ComposePizzaFromName(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaByName(new Pizzaiolo(), $responseFactory, $streamFactory);
         $response = $controller($request);
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -41,7 +41,7 @@ final class ComposePizzaFromNameTest extends TestCase
     {
         $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromName(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaByName(new Pizzaiolo(), $responseFactory, $streamFactory);
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -57,7 +57,7 @@ final class ComposePizzaFromNameTest extends TestCase
     {
         $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromName(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaByName(new Pizzaiolo(), $responseFactory, $streamFactory);
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

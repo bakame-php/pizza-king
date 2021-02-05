@@ -6,6 +6,7 @@ namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
+use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -55,6 +56,53 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getBody')->willReturn((new StreamFactory())->createStream(''));
 
         $this->expectException(JsonException::class);
+
+        $controller($request);
+    }
+
+    /** @test */
+    public function it_fails_if_the_meat_list_is_invalid(): void
+    {
+        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
+        $streamFactory = $this->createStub(StreamFactoryInterface::class);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+
+        $data = [
+            'sauce' => 'creme',
+            'cheese' => 'mozzarella',
+            'meats' => 'jambon',
+        ];
+        /** @var string $jsonData */
+        $jsonData = json_encode($data);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getBody')->willReturn((new StreamFactory())->createStream($jsonData));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The meats should be specify using a list.');
+
+        $controller($request);
+    }
+
+    /** @test */
+    public function it_fails_if_the_meat_list_contains_invalid_ingredients(): void
+    {
+        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
+        $streamFactory = $this->createStub(StreamFactoryInterface::class);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+
+        $data = [
+            'sauce' => 'creme',
+            'cheese' => 'mozzarella',
+            'meats' => ['jambon', 'ananas'],
+        ];
+
+        /** @var string $jsonData */
+        $jsonData = json_encode($data);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getBody')->willReturn((new StreamFactory())->createStream($jsonData));
+
+        $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`meats` is an invalid or an unknown ingredient.');
 
         $controller($request);
     }

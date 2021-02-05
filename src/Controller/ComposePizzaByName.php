@@ -15,7 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use function gettype;
 use function json_encode;
 
-final class ComposePizzaFromName
+final class ComposePizzaByName
 {
     public function __construct(
         private Pizzaiolo $pizzaiolo,
@@ -42,7 +42,6 @@ final class ComposePizzaFromName
 
         return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body))
-            ;
+            ->withBody($this->streamFactory->createStream($body));
     }
 }

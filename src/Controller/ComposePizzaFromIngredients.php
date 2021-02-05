@@ -48,8 +48,7 @@ final class ComposePizzaFromIngredients
 
         return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body))
-        ;
+            ->withBody($this->streamFactory->createStream($body));
     }
 
     /**
@@ -86,7 +85,7 @@ final class ComposePizzaFromIngredients
             2 < count($data['meats']) => throw new InvalidArgumentException('The meats should be specify in a list with maximum 2 variety; '.gettype($data['meats']).' given.'),
             !Sauce::isKnown($data['sauce']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['sauce']),
             !Cheese::isKnown($data['cheese']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['cheese']),
-            default => array_merge($ingredients, [$data['sauce'], $data['cheese']]),
+            default => [$data['sauce'], $data['cheese'], ...$ingredients],
         };
     }
 }

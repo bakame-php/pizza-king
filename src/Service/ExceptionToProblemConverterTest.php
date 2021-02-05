@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bakame\PizzaKing\Service;
 
 use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -18,7 +19,7 @@ final class ExceptionToProblemConverterTest extends TestCase
         $exception = new Exception('foobar', $exceptionCode);
         $problem = $converter->toApiProblem($exception);
 
-        self::assertSame(500, $problem->getStatus());
+        self::assertSame(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, $problem->getStatus());
         self::assertSame('Internal Server Error', $problem->getTitle());
         self::assertSame($exception->getMessage(), $problem->getDetail());
         self::assertArrayHasKey('code', $problem);
@@ -30,7 +31,7 @@ final class ExceptionToProblemConverterTest extends TestCase
     public function it_converts_a_throwable_error_into_an_api_problem_and_preserve_its_code(): void
     {
         $converter = new ExceptionToProblemConverter();
-        $exceptionCode = 500;
+        $exceptionCode = StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
         $exception = new Exception('foobar', $exceptionCode);
         $problem = $converter->toApiProblem($exception);
 
@@ -47,7 +48,7 @@ final class ExceptionToProblemConverterTest extends TestCase
     {
         $converter = new ExceptionToProblemConverter('about:blank', ExceptionToProblemConverter::ADD_TRACING);
         $previous = new Exception('barbaz');
-        $exceptionCode = 400;
+        $exceptionCode = StatusCodeInterface::STATUS_BAD_REQUEST;
         $exception = new RuntimeException('foobar', $exceptionCode, $previous);
         $problem = $converter->toApiProblem($exception);
 
