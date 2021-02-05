@@ -22,8 +22,8 @@ phpcs:
 phpmd:
 	@docker run --rm -it -v$(PWD):/app --workdir=/app php:8.0-cli-alpine vendor/bin/phpmd src text phpmd.xml --exclude=vendor --ansi
 
-# make order
-order:
-	@docker run --rm -it -v$(PWD):/app --workdir=/app php:8.0-cli-alpine php order.php
+# make website
+rest:
+	@docker run --rm -it -v$(PWD):/app --workdir=/app -p4000:4000 php:8.0-cli-alpine php -S 0.0.0.0:4000 -t public
 
 .PHONY: install tests psalm phpstan phpcs phpmd order

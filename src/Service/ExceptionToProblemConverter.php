@@ -7,6 +7,7 @@ namespace Bakame\PizzaKing\Service;
 use Crell\ApiProblem\ApiProblem;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
+use Throwable;
 use function array_key_first;
 use function array_key_last;
 
@@ -84,7 +85,7 @@ final class ExceptionToProblemConverter implements StatusCodeInterface
     {
     }
 
-    public function toApiProblem(\Throwable $exception): ApiProblem
+    public function toApiProblem(Throwable $exception): ApiProblem
     {
         $status = $this->getStatusCode($exception);
 
@@ -98,7 +99,7 @@ final class ExceptionToProblemConverter implements StatusCodeInterface
         return $problem;
     }
 
-    private function getStatusCode(\Throwable $throwable): int
+    private function getStatusCode(Throwable $throwable): int
     {
         $code = (int) $throwable->getCode();
 
@@ -109,7 +110,7 @@ final class ExceptionToProblemConverter implements StatusCodeInterface
         };
     }
 
-    private function addTracing(ApiProblem $problem, \Throwable $throwable): void
+    private function addTracing(ApiProblem $problem, Throwable $throwable): void
     {
         if (self::ADD_TRACING !== $this->tracing) {
             return;
@@ -127,7 +128,7 @@ final class ExceptionToProblemConverter implements StatusCodeInterface
     /**
      * @return array{code:int, file:string, line:int, message:string, trace:array<array-key, string>, type:string}
      */
-    private function serializeException(\Throwable $throwable): array
+    private function serializeException(Throwable $throwable): array
     {
         return [
             'type' => $throwable::class,

@@ -72,14 +72,20 @@ The following PHP features are used:
 - [numeric literal separator](https://wiki.php.net/rfc/numeric_literal_separator)
 - [arrow function](https://wiki.php.net/rfc/arrow_functions_v2)
 
-Example
+REST API
 -------
 
-A simple example can be found by running
+A simple REST API can be use by running
 
 ```
-make order
+make rest
 ```
+
+Current endpoints:
+
+````php
+GET /pizza/{name} 
+````
 
 Testing
 -------

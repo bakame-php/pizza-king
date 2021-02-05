@@ -15,7 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use function gettype;
 use function json_encode;
 
-final class ComposePizzaByName
+final class ComposePizzaByName implements StatusCodeInterface
 {
     public function __construct(
         private Pizzaiolo $pizzaiolo,
@@ -40,7 +40,7 @@ final class ComposePizzaByName
         /** @var string $body */
         $body = json_encode(['price' => $pizza->price()->toString()]);
 
-        return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_OK)
+        return $this->responseFactory->createResponse(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
     }

@@ -12,6 +12,7 @@ use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,7 +27,7 @@ use function json_decode;
 use function json_encode;
 use const JSON_THROW_ON_ERROR;
 
-final class ComposePizzaFromIngredients
+final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
     public function __construct(
         private Pizzaiolo $pizzaiolo,
@@ -46,14 +47,14 @@ final class ComposePizzaFromIngredients
         /** @var string $body */
         $body = json_encode(['price' => $pizza->price()->toString()]);
 
-        return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_OK)
+        return $this->responseFactory->createResponse(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
     }
 
     /**
      * @throws InvalidArgumentException
-     * @throws \JsonException
+     * @throws JsonException
      * @throws UnableToHandleIngredient
      *
      * @return array<string>
@@ -82,7 +83,7 @@ final class ComposePizzaFromIngredients
             3 !== count($data) => throw UnableToHandleIngredient::dueToUnSupportedIngredient(),
             !isset($data['sauce']) || !is_string($data['sauce']) => throw new InvalidArgumentException('The sauce name should be a string; '.gettype($data['sauce']).' given.'),
             !isset($data['cheese']) || !is_string($data['cheese']) => throw new InvalidArgumentException('The cheese name should be a string; '.gettype($data['sauce']).' given.'),
-            2 < count($data['meats']) => throw new InvalidArgumentException('The meats should be specify in a list with maximum 2 variety; '.gettype($data['meats']).' given.'),
+            2 < count($data['meats']) => throw new InvalidArgumentException('The meats should be specify in a list with maximum 2 varieties given.'),
             !Sauce::isKnown($data['sauce']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['sauce']),
             !Cheese::isKnown($data['cheese']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['cheese']),
             default => [$data['sauce'], $data['cheese'], ...$ingredients],
