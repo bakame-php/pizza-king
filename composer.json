@@ -4,22 +4,30 @@
             "Bakame\\PizzaKing\\": "src"
         }
     },
+    "require": {
+        "crell/api-problem": "^3.3",
+        "fig/http-message-util": "^1.1",
+        "psr/http-factory": "^1.0",
+        "slim/slim": "^4.7",
+        "slim/psr7": "^1.3"
+    },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.18",
+        "phpmd/phpmd": "^2.9",
         "phpunit/phpunit": "^9.5",
-        "vimeo/psalm": "^4.4",
         "phpstan/phpstan": "^0.12.70",
         "phpstan/phpstan-strict-rules": "^0.12.9",
         "phpstan/phpstan-phpunit": "^0.12.17",
         "psalm/plugin-phpunit": "^0.15.1",
-        "friendsofphp/php-cs-fixer": "^2.18",
-        "phpmd/phpmd": "^2.9"
+        "vimeo/psalm": "^4.4"
     },
     "scripts": {
         "phpmd": "phpmd src html phpmd.xml --exclude=vendor --ansi --reportfile build/phpmd.html",
-        "phpstan": "phpstan analyse -l max -c phpstan.neon src --memory-limit 192M --ansi",
+        "phpstan": "phpstan analyse -l max -c phpstan.neon src public --memory-limit 192M --ansi",
         "psalm": "psalm --show-info=true",
         "phpunit": "phpunit --coverage-text",
         "phpcs": "php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi",
+        "start": "php -S 0.0.0.0:4000 -t public",
         "test": [
             "@phpunit",
             "@phpstan",
@@ -33,6 +41,10 @@
         "psalm": "Runs complete codebase static analysis",
         "phpunit": "Runs unit and functional testing",
         "phpcs": "Runs coding style testing",
-        "test": "Runs all tests"
+        "test": "Runs all tests",
+        "start": "Runs PHP local server"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
