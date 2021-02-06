@@ -13,14 +13,17 @@ final class Pizzaiolo
      */
     public function composeFromIngredients(array $names, Euro $basePrice = null): Pizza
     {
-        $converter = fn (string $name): Ingredient => match (true) {
+        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromName'], $names), $basePrice);
+    }
+
+    public function getIngredientFromName(string $name): Ingredient
+    {
+        return match (true) {
             Cheese::isKnown($name) => Cheese::fromName($name),
             Sauce::isKnown($name) => Sauce::fromName($name),
             Meat::isKnown($name) => Meat::fromName($name),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
         };
-
-        return Pizza::fromIngredients(array_map($converter, $names), $basePrice);
     }
 
     public function composeFromName(string $name, Euro $basePrice = null): Pizza

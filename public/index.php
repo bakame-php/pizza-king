@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Bakame\PizzaKing\Controller\ComposePizzaByName;
 use Bakame\PizzaKing\Controller\ComposePizzaFromIngredients;
+use Bakame\PizzaKing\Controller\GetPizzaIngredientByName;
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Service\ExceptionToProblemConverter;
 use Bakame\PizzaKing\Service\IngredientTransformer;
@@ -36,4 +37,5 @@ $errorMiddleware->setDefaultErrorHandler(fn (
 
 $app->get('/compose', new ComposePizzaFromIngredients($pizzaiolo, $transformer, $streamFactory));
 $app->get('/pizza/{name}', new ComposePizzaByName($pizzaiolo, $transformer, $streamFactory));
+$app->get('/ingredient/{name}', new GetPizzaIngredientByName($pizzaiolo, $transformer, $streamFactory));
 $app->run();
