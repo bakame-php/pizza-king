@@ -22,7 +22,7 @@ final class ComposePizzaByNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
         $transformer = new IngredientTransformer();
-        $result = $transformer->pizzaToArray($pizzaiolo->composeFromName('carnivore'), 'carnivore');
+        $result = $transformer->dishToArray($pizzaiolo->composeFromName('carnivore'), 'carnivore');
 
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
         $streamFactory->method('createStream')->will(

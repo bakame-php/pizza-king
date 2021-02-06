@@ -40,7 +40,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     {
         $ingredients = $this->parseQuery($request->getUri());
         $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
-        $presentation = $this->transformer->pizzaToArray($pizza, 'customized');
+        $presentation = $this->transformer->dishToArray($pizza, 'customized');
 
         /** @var string $body */
         $body = json_encode($presentation);
@@ -80,37 +80,28 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
 
         /** @var array<string> $meats */
         $meats = array_reduce($query->getAll('meat'), $reducer, []);
-
         $sauces = $query->getAll('sauce');
+        $cheeses = $query->getAll('cheese');
+
         if (1 !== count($sauces)) {
             throw UnableToHandleIngredient::dueToWrongQuantity(count($sauces), 'sauce');
         }
 
-        /** @var string|null $sauce */
-        $sauce = reset($sauces);
-        if (null === $sauce) {
-            throw UnableToHandleIngredient::dueToMissingIngredient('sauce');
-        }
-
-        if (!Sauce::isKnown($sauce)) {
-            throw UnableToHandleIngredient::dueToUnknownIngredient($sauce);
-        }
-
-        $cheeses = $query->getAll('cheese');
         if (1 !== count($cheeses)) {
             throw UnableToHandleIngredient::dueToWrongQuantity(count($cheeses), 'cheese');
         }
 
+        /** @var string|null $sauce */
+        $sauce = reset($sauces);
         /** @var string|null $cheese */
         $cheese = reset($cheeses);
-        if (null === $cheese) {
-            throw UnableToHandleIngredient::dueToMissingIngredient('cheese');
-        }
 
-        if (!Cheese::isKnown($cheese)) {
-            throw UnableToHandleIngredient::dueToUnknownIngredient($cheese);
-        }
-
-        return [$sauce, $cheese, ...$meats];
+        return match (true) {
+            null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
+            !Sauce::isKnown($sauce) => throw UnableToHandleIngredient::dueToUnknownIngredient($sauce),
+            null === $cheese => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
+            !Cheese::isKnown($cheese) => throw UnableToHandleIngredient::dueToUnknownIngredient($cheese),
+            default => [$sauce, $cheese, ...$meats],
+        };
     }
 }

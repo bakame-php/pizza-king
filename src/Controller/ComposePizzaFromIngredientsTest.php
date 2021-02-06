@@ -23,7 +23,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
         $transformer = new IngredientTransformer();
-        $result = $transformer->pizzaToArray($pizzaiolo->composeFromIngredients([
+        $result = $transformer->dishToArray($pizzaiolo->composeFromIngredients([
             'creme', 'mozzarella', 'jambon', 'pepperoni',
         ]), 'customized');
 

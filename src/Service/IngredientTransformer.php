@@ -4,33 +4,26 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing\Service;
 
+use Bakame\PizzaKing\Model\Dish;
 use Bakame\PizzaKing\Model\Euro;
 use Bakame\PizzaKing\Model\Ingredient;
-use Bakame\PizzaKing\Model\Pizza;
 use function array_map;
+use function array_pop;
+use function explode;
 use function strtolower;
 use function trim;
 
 final class IngredientTransformer
 {
-    public function pizzaToArray(Pizza $pizza, string|null $name = null): array
+    public function dishToArray(Dish $dish, string|null $name = null): array
     {
-        $data = $this->ingredientToArray($pizza);
+        $data = $this->ingredientToArray($dish);
+        $data['ingredients'] = array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $dish->ingredients());
         if (null !== $name) {
             $data['name'] = strtolower(trim($name));
         }
-        $data['ingredients'] = array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $pizza->ingredients());
 
         return $data;
-    }
-
-    private function getIngredientType(Ingredient $ingredient): string
-    {
-        $path = explode('\\', $ingredient::class);
-
-        $name = array_pop($path);
-
-        return strtolower($name);
     }
 
     public function priceToArray(Euro $euro): array
@@ -43,8 +36,10 @@ final class IngredientTransformer
 
     public function ingredientToArray(Ingredient $ingredient): array
     {
+        $path = explode('\\', $ingredient::class);
+
         return [
-            'type' => $this->getIngredientType($ingredient),
+            'type' => strtolower(array_pop($path)),
             'name' => $ingredient->name(),
             'price' => $this->priceToArray($ingredient->price()),
         ];

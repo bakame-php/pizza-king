@@ -83,7 +83,7 @@ final class IngredientTransformerTest extends TestCase
             Cheese::fromName('goat', Euro::fromCents(2_00)),
         ]);
 
-        self::assertSame($expected, $this->transformer->pizzaToArray($pizza));
+        self::assertSame($expected, $this->transformer->dishToArray($pizza));
     }
 
     /** @test */
@@ -130,6 +130,6 @@ final class IngredientTransformerTest extends TestCase
             Meat::fromName('jambon', Euro::fromCents(3_00)),
         ]);
 
-        self::assertSame($expected, $this->transformer->pizzaToArray($pizza));
+        self::assertSame($expected, $this->transformer->dishToArray($pizza));
     }
 }

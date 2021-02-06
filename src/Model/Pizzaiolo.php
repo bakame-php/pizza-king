@@ -16,12 +16,12 @@ final class Pizzaiolo
         return Pizza::fromIngredients(array_map([$this, 'getIngredientFromName'], $names), $basePrice);
     }
 
-    public function getIngredientFromName(string $name): Ingredient
+    public function getIngredientFromName(string $name, Euro $price = null): Ingredient
     {
         return match (true) {
-            Cheese::isKnown($name) => Cheese::fromName($name),
-            Sauce::isKnown($name) => Sauce::fromName($name),
-            Meat::isKnown($name) => Meat::fromName($name),
+            Cheese::isKnown($name) => Cheese::fromName($name, $price),
+            Sauce::isKnown($name) => Sauce::fromName($name, $price),
+            Meat::isKnown($name) => Meat::fromName($name, $price),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
         };
     }

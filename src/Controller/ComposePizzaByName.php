@@ -36,7 +36,7 @@ final class ComposePizzaByName implements StatusCodeInterface
         }
 
         $pizza = $this->pizzaiolo->composeFromName($name);
-        $presentation = $this->transformer->pizzaToArray($pizza, $name);
+        $presentation = $this->transformer->dishToArray($pizza, $name);
         /** @var string $body */
         $body = json_encode($presentation);
 
