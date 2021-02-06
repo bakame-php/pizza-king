@@ -6,9 +6,9 @@ namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\CanNotProcessOrder;
 use Bakame\PizzaKing\Model\Pizzaiolo;
+use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -19,7 +19,7 @@ final class ComposePizzaByName implements StatusCodeInterface
 {
     public function __construct(
         private Pizzaiolo $pizzaiolo,
-        private ResponseFactoryInterface $responseFactory,
+        private IngredientTransformer $transformer,
         private StreamFactoryInterface $streamFactory
     ) {
     }
@@ -28,7 +28,7 @@ final class ComposePizzaByName implements StatusCodeInterface
      * @throws InvalidArgumentException
      * @throws CanNotProcessOrder
      */
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $name = $request->getAttribute('name');
         if (!is_string($name)) {
@@ -36,11 +36,12 @@ final class ComposePizzaByName implements StatusCodeInterface
         }
 
         $pizza = $this->pizzaiolo->composeFromName($name);
-
+        $presentation = $this->transformer->pizzaToArray($pizza, $name);
         /** @var string $body */
-        $body = json_encode(['price' => $pizza->price()->toString()]);
+        $body = json_encode($presentation);
 
-        return $this->responseFactory->createResponse(self::STATUS_OK)
+        return $response
+            ->withStatus(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
     }

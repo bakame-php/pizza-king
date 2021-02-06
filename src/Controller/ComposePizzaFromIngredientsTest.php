@@ -6,22 +6,27 @@ namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
+use Bakame\PizzaKing\Service\IngredientTransformer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Response;
+use function json_encode;
 
 final class ComposePizzaFromIngredientsTest extends TestCase
 {
     /** @test */
     public function it_returns_the_price_of_a_pizza(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
-        $responseFactory->method('createResponse')->willReturn(new Response());
+        $pizzaiolo = new Pizzaiolo();
+        $transformer = new IngredientTransformer();
+        $result = $transformer->pizzaToArray($pizzaiolo->composeFromIngredients([
+            'creme', 'mozzarella', 'jambon', 'pepperoni',
+        ]), 'customized');
+
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
         $streamFactory->method('createStream')->will(
             self::returnCallback([new StreamFactory(), 'createStream'])
@@ -32,19 +37,18 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
-        $response = $controller($request);
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $transformer, $streamFactory);
+        $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
-        self::assertSame('{"price":"14.00 EUR"}', $response->getBody()->__toString());
+        self::assertSame(json_encode($result), $response->getBody()->__toString());
     }
 
     /** @test */
     public function it_fails_if_the_request_body_is_not_parsable(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('');
@@ -53,15 +57,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_meat_list_is_invalid(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=ananas');
@@ -71,15 +74,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`ananas` is an invalid or an unknown ingredient.');
 
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_meat_list_is_too_big(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=jambon&meat=jambon&meat=jambon');
@@ -89,16 +91,15 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`meats` can not be used with the following quantity `3`.');
 
-        $controller($request);
+        $controller($request, new Response());
     }
 
 
     /** @test */
     public function it_fails_if_the_meat_value_is_null(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&meat');
@@ -106,15 +107,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_sauce_is_not_supported(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=red&cheese=mozzarella');
@@ -124,15 +124,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`red` is an invalid or an unknown ingredient.');
 
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_sauce_value_is_null(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce&cheese=mozzarella');
@@ -140,15 +139,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_cheese_value_is_null(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese');
@@ -156,15 +154,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_the_cheese_value_is_invalid(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=jambon');
@@ -172,15 +169,14 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $controller($request);
+        $controller($request, new Response());
     }
 
     /** @test */
     public function it_fails_if_there_is_too_many_cheese(): void
     {
-        $responseFactory = $this->createStub(ResponseFactoryInterface::class);
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $responseFactory, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&cheese=goat');
@@ -188,6 +184,6 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $controller($request);
+        $controller($request, new Response());
     }
 }

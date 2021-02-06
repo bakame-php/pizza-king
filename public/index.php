@@ -6,6 +6,7 @@ use Bakame\PizzaKing\Controller\ComposePizzaByName;
 use Bakame\PizzaKing\Controller\ComposePizzaFromIngredients;
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Service\ExceptionToProblemConverter;
+use Bakame\PizzaKing\Service\IngredientTransformer;
 use Crell\ApiProblem\HttpConverter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,10 +18,8 @@ use Slim\Psr7\Factory\StreamFactory;
 require dirname(__DIR__).'/vendor/autoload.php';
 
 $pizzaiolo = new Pizzaiolo();
-$responseFactory = new ResponseFactory();
 $streamFactory = new StreamFactory();
-$exceptionConverter = new ExceptionToProblemConverter();
-$httpConverter = new HttpConverter($responseFactory);
+$transformer = new IngredientTransformer();
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
@@ -32,8 +31,9 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     bool $logErrors,
     bool $logErrorDetails,
     ?LoggerInterface $logger = null,
-): ResponseInterface => $httpConverter->toJsonResponse($exceptionConverter->toApiProblem($exception)));
+): ResponseInterface => (new HttpConverter(new ResponseFactory()))
+    ->toJsonResponse((new ExceptionToProblemConverter())->toApiProblem($exception)));
 
-$app->get('/compose', new ComposePizzaFromIngredients($pizzaiolo, $responseFactory, $streamFactory));
-$app->get('/pizza/{name}', new ComposePizzaByName($pizzaiolo, $responseFactory, $streamFactory));
+$app->get('/compose', new ComposePizzaFromIngredients($pizzaiolo, $transformer, $streamFactory));
+$app->get('/pizza/{name}', new ComposePizzaByName($pizzaiolo, $transformer, $streamFactory));
 $app->run();

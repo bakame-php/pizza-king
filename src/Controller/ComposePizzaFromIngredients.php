@@ -10,14 +10,15 @@ use Bakame\PizzaKing\Model\Meat;
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
+use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use JsonException;
 use League\Uri\Components\Query;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriInterface;
 use function array_reduce;
 use function count;
 use function json_encode;
@@ -27,7 +28,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
     public function __construct(
         private Pizzaiolo $pizzaiolo,
-        private ResponseFactoryInterface $responseFactory,
+        private IngredientTransformer $transformer,
         private StreamFactoryInterface $streamFactory
     ) {
     }
@@ -35,15 +36,17 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     /**
      * @throws CanNotProcessOrder
      */
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $input = $request->getUri()->getQuery();
-        $pizza = $this->pizzaiolo->composeFromIngredients($this->parseQuery($input));
+        $ingredients = $this->parseQuery($request->getUri());
+        $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
+        $presentation = $this->transformer->pizzaToArray($pizza, 'customized');
 
         /** @var string $body */
-        $body = json_encode(['price' => $pizza->price()->toString()]);
+        $body = json_encode($presentation);
 
-        return $this->responseFactory->createResponse(self::STATUS_OK)
+        return $response
+            ->withStatus(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
     }
@@ -55,9 +58,9 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      *
      * @return array<string>
      */
-    private function parseQuery(string $body): array
+    private function parseQuery(UriInterface $uri): array
     {
-        $query = Query::createFromRFC3986($body);
+        $query = Query::createFromUri($uri);
         $reducer = function (array $carry, string|null $value) use ($query): array {
             if (null === $value) {
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
