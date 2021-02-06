@@ -3,7 +3,7 @@ Pizza King
 
 [![Build Status](https://github.com/bakame-php/pizza-king/workflows/build/badge.svg)](https://github.com/bakame-php/pizza-king/actions?query=workflow%3A%22build%22)
 
-This is a possible implementation to [mnapoli/ pizza-king](https://github.com/mnapoli/pizza-king) exercise.
+This is a possible implementation of [mnapoli/pizza-king](https://github.com/mnapoli/pizza-king) exercise.
 
 The exercise
 -------
@@ -63,6 +63,7 @@ The following PHP features are used:
 
 #### PHP 8
 
+- [named parameters](https://wiki.php.net/rfc/named_params)
 - [match expression](https://wiki.php.net/rfc/match_expression_v2)
 - [constructor promotion](https://wiki.php.net/rfc/constructor_promotion)
 

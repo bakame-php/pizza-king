@@ -34,6 +34,6 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     ?LoggerInterface $logger = null,
 ): ResponseInterface => $httpConverter->toJsonResponse($exceptionConverter->toApiProblem($exception)));
 
-$app->post('/compose', new ComposePizzaFromIngredients($pizzaiolo, $responseFactory, $streamFactory));
+$app->get('/compose', new ComposePizzaFromIngredients($pizzaiolo, $responseFactory, $streamFactory));
 $app->get('/pizza/{name}', new ComposePizzaByName($pizzaiolo, $responseFactory, $streamFactory));
 $app->run();

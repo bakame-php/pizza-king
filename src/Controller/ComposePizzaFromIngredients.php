@@ -13,19 +13,15 @@ use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use JsonException;
+use League\Uri\Components\Query;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use function array_filter;
-use function array_values;
+use function array_reduce;
 use function count;
-use function gettype;
-use function is_array;
-use function is_string;
-use function json_decode;
 use function json_encode;
-use const JSON_THROW_ON_ERROR;
+use function reset;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
@@ -41,8 +37,8 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $input = (string) $request->getBody();
-        $pizza = $this->pizzaiolo->composeFromIngredients($this->parseBody($input));
+        $input = $request->getUri()->getQuery();
+        $pizza = $this->pizzaiolo->composeFromIngredients($this->parseQuery($input));
 
         /** @var string $body */
         $body = json_encode(['price' => $pizza->price()->toString()]);
@@ -59,34 +55,59 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      *
      * @return array<string>
      */
-    private function parseBody(string $body): array
+    private function parseQuery(string $body): array
     {
-        /** @var array $data */
-        $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-        if (!isset($data['meats'])) {
-            $data['meats'] = [];
-        }
+        $query = Query::createFromRFC3986($body);
+        $reducer = function (array $carry, string|null $value) use ($query): array {
+            if (null === $value) {
+                throw UnableToHandleIngredient::dueToMissingIngredient('meat');
+            }
 
-        if (!is_array($data['meats'])) {
-            throw new InvalidArgumentException('The meats should be specify using a list.');
-        }
+            if (!Meat::isKnown($value)) {
+                throw UnableToHandleIngredient::dueToUnknownIngredient($value);
+            }
 
-        $filter = fn (mixed $value): bool => (is_string($value) && Meat::isKnown($value));
-        if ($data['meats'] !== array_filter($data['meats'], $filter)) {
-            throw UnableToHandleIngredient::dueToUnknownIngredient('meats');
-        }
+            $carry[] = $value;
+            if (2 < count($carry)) {
+                throw UnableToHandleIngredient::dueToWrongQuantity(count($query->getAll('meat')), 'meats');
+            }
 
-        /** @var array<string> $ingredients */
-        $ingredients = array_values($data['meats']);
-
-        return match (true) {
-            3 !== count($data) => throw UnableToHandleIngredient::dueToUnSupportedIngredient(),
-            !isset($data['sauce']) || !is_string($data['sauce']) => throw new InvalidArgumentException('The sauce name should be a string; '.gettype($data['sauce']).' given.'),
-            !isset($data['cheese']) || !is_string($data['cheese']) => throw new InvalidArgumentException('The cheese name should be a string; '.gettype($data['sauce']).' given.'),
-            2 < count($data['meats']) => throw new InvalidArgumentException('The meats should be specify in a list with maximum 2 varieties given.'),
-            !Sauce::isKnown($data['sauce']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['sauce']),
-            !Cheese::isKnown($data['cheese']) => throw UnableToHandleIngredient::dueToUnknownIngredient($data['cheese']),
-            default => [$data['sauce'], $data['cheese'], ...$ingredients],
+            return $carry;
         };
+
+        /** @var array<string> $meats */
+        $meats = array_reduce($query->getAll('meat'), $reducer, []);
+
+        $sauces = $query->getAll('sauce');
+        if (1 !== count($sauces)) {
+            throw UnableToHandleIngredient::dueToWrongQuantity(count($sauces), 'sauce');
+        }
+
+        /** @var string|null $sauce */
+        $sauce = reset($sauces);
+        if (null === $sauce) {
+            throw UnableToHandleIngredient::dueToMissingIngredient('sauce');
+        }
+
+        if (!Sauce::isKnown($sauce)) {
+            throw UnableToHandleIngredient::dueToUnknownIngredient($sauce);
+        }
+
+        $cheeses = $query->getAll('cheese');
+        if (1 !== count($cheeses)) {
+            throw UnableToHandleIngredient::dueToWrongQuantity(count($cheeses), 'cheese');
+        }
+
+        /** @var string|null $cheese */
+        $cheese = reset($cheeses);
+        if (null === $cheese) {
+            throw UnableToHandleIngredient::dueToMissingIngredient('cheese');
+        }
+
+        if (!Cheese::isKnown($cheese)) {
+            throw UnableToHandleIngredient::dueToUnknownIngredient($cheese);
+        }
+
+        return [$sauce, $cheese, ...$meats];
     }
 }
