@@ -11,10 +11,10 @@ use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
 use League\Uri\Components\Query;
+use League\Uri\Contracts\QueryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UriInterface;
 use function array_reduce;
 use function count;
 use function json_encode;
@@ -34,7 +34,8 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $ingredients = $this->parseQuery($request->getUri());
+        $query = Query::createFromUri($request->getUri());
+        $ingredients = $this->parseQuery($query);
         $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
         $presentation = $this->transformer->dishToArray($pizza, 'customized');
 
@@ -52,16 +53,15 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      *
      * @return array<string>
      */
-    private function parseQuery(UriInterface $uri): array
+    private function parseQuery(QueryInterface $query): array
     {
-        $query = Query::createFromUri($uri);
         $reducer = function (array $carry, string|null $value): array {
             if (null === $value) {
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
             }
 
             if (!Meat::isKnown($value)) {
-                throw UnableToHandleIngredient::dueToUnknownIngredient($value);
+                throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat');
             }
 
             $carry[] = $value;

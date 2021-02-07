@@ -38,7 +38,7 @@ final class Pizzaiolo
             'napolitaine', 'napolitana' => $this->composeNapolitana($basePrice),
             'carnivore' => $this->composeCarnivore($basePrice),
             'chevre', 'goat' => $this->composeGoat($basePrice),
-            default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
+            default => throw UnableToHandleIngredient::dueToUnknownVariety($name, 'pizza'),
         };
     }
 

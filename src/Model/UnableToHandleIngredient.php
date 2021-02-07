@@ -35,4 +35,9 @@ final class UnableToHandleIngredient extends \InvalidArgumentException implement
     {
         return new self('`'.$ingredient.'` is an invalid or an unknown ingredient.');
     }
+
+    public static function dueToUnknownVariety(string $name, string $ingredient): self
+    {
+        return new self('`'.$name.'` is an invalid or an unknown name for `'.$ingredient.'`.');
+    }
 }

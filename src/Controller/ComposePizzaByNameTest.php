@@ -64,7 +64,6 @@ final class ComposePizzaByNameTest extends TestCase
         $request->method('getAttribute')->willReturn('frites');
 
         $this->expectException(UnableToHandleIngredient::class);
-        $this->expectExceptionMessage('`frites` is an invalid or an unknown ingredient.');
 
         $controller($request, new Response());
     }
