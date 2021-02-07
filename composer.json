@@ -5,6 +5,7 @@
         }
     },
     "require": {
+        "php": "^8.0",
         "crell/api-problem": "^3.3",
         "fig/http-message-util": "^1.1",
         "league/uri-components": "^2.3",
