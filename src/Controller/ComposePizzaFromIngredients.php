@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\CanNotProcessOrder;
-use Bakame\PizzaKing\Model\Cheese;
 use Bakame\PizzaKing\Model\Meat;
 use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
-use InvalidArgumentException;
-use JsonException;
 use League\Uri\Components\Query;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,8 +48,6 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     }
 
     /**
-     * @throws InvalidArgumentException
-     * @throws JsonException
      * @throws UnableToHandleIngredient
      *
      * @return array<string>
@@ -61,7 +55,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     private function parseQuery(UriInterface $uri): array
     {
         $query = Query::createFromUri($uri);
-        $reducer = function (array $carry, string|null $value) use ($query): array {
+        $reducer = function (array $carry, string|null $value): array {
             if (null === $value) {
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
             }
@@ -71,9 +65,6 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
             }
 
             $carry[] = $value;
-            if (2 < count($carry)) {
-                throw UnableToHandleIngredient::dueToWrongQuantity(count($query->getAll('meat')), 'meats');
-            }
 
             return $carry;
         };
@@ -98,9 +89,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
 
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
-            !Sauce::isKnown($sauce) => throw UnableToHandleIngredient::dueToUnknownIngredient($sauce),
             null === $cheese => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
-            !Cheese::isKnown($cheese) => throw UnableToHandleIngredient::dueToUnknownIngredient($cheese),
             default => [$sauce, $cheese, ...$meats],
         };
     }
