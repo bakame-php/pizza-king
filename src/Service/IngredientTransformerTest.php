@@ -54,9 +54,9 @@ final class IngredientTransformerTest extends TestCase
         $expected = [
             'type' => 'pizza',
             'name' => 'pizza',
-            'price' => [
+            'basePrice' => [
                 'currency' => 'EUR',
-                'amount' => '7.00',
+                'amount' => '4.00',
             ],
             'ingredients' => [
                 [
@@ -76,6 +76,10 @@ final class IngredientTransformerTest extends TestCase
                     ],
                 ],
             ],
+            'price' => [
+                'currency' => 'EUR',
+                'amount' => '7.00',
+            ],
         ];
 
         $pizza = Pizza::fromIngredients([
@@ -92,9 +96,9 @@ final class IngredientTransformerTest extends TestCase
         $expected = [
             'type' => 'pizza',
             'name' => 'pizza',
-            'price' => [
+            'basePrice' => [
                 'currency' => 'EUR',
-                'amount' => '10.00',
+                'amount' => '4.00',
             ],
             'ingredients' => [
                 [
@@ -121,6 +125,10 @@ final class IngredientTransformerTest extends TestCase
                         'amount' => '3.00',
                     ],
                 ],
+            ],
+            'price' => [
+                'currency' => 'EUR',
+                'amount' => '10.00',
             ],
         ];
 

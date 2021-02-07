@@ -34,7 +34,7 @@ final class Pizzaiolo
         }
 
         return match (strtolower($name)) {
-            'reine', 'queen' => $this->composeReine($basePrice),
+            'reine', 'queen' => $this->composeQueen($basePrice),
             'napolitaine', 'napolitana' => $this->composeNapolitana($basePrice),
             'carnivore' => $this->composeCarnivore($basePrice),
             'chevre', 'goat' => $this->composeGoat($basePrice),
@@ -42,19 +42,19 @@ final class Pizzaiolo
         };
     }
 
-    public function composeReine(Euro $basePrice = null): Pizza
+    public function composeQueen(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['sauce tomate', 'jambon', 'mozzarella'], $basePrice);
+        return $this->composeFromIngredients(['tomato', 'jambon', 'mozzarella'], $basePrice);
     }
 
     public function composeNapolitana(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['sauce tomate', 'mozzarella'], $basePrice);
+        return $this->composeFromIngredients(['tomato', 'mozzarella'], $basePrice);
     }
 
     public function composeGoat(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['chevre', 'tomato'], $basePrice);
+        return $this->composeFromIngredients(['tomato', 'chevre'], $basePrice);
     }
 
     public function composeCarnivore(Euro $basePrice = null): Pizza

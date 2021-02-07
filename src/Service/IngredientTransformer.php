@@ -17,8 +17,15 @@ final class IngredientTransformer
 {
     public function dishToArray(Dish $dish, string|null $name = null): array
     {
-        $data = $this->ingredientToArray($dish);
-        $data['ingredients'] = array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $dish->ingredients());
+        $path = explode('\\', $dish::class);
+        $data = [
+            'type' => strtolower(array_pop($path)),
+            'name' => $dish->name(),
+            'basePrice' => $this->priceToArray($dish->basePrice()),
+            'ingredients' => array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $dish->ingredients()),
+            'price' => $this->priceToArray($dish->price()),
+        ];
+
         if (null !== $name) {
             $data['name'] = strtolower(trim($name));
         }

@@ -27,10 +27,10 @@ final class PizzaKingTest extends TestCase
 
     public function testReine(): void
     {
-        $pizza = $this->pizzaiolo->composeReine();
+        $pizza = $this->pizzaiolo->composeQueen();
 
         self::assertCount(3, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('sauce tomate'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromName('tomato'), $pizza->ingredients());
         self::assertContainsEquals(Meat::fromName('jambon'), $pizza->ingredients());
         self::assertContainsEquals(Cheese::fromName('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(10_00), $pizza->price());
@@ -42,7 +42,7 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->pizzaiolo->composeNapolitana();
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('sauce tomate'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromName('tomato'), $pizza->ingredients());
         self::assertContainsEquals(Cheese::fromName('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
         self::assertEquals($pizza, $this->pizzaiolo->composeFromName('napolitana'));
