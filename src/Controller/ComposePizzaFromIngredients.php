@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\CanNotProcessOrder;
+use Bakame\PizzaKing\Model\Cheese;
 use Bakame\PizzaKing\Model\Meat;
 use Bakame\PizzaKing\Model\Pizzaiolo;
+use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
@@ -90,6 +92,8 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
             null === $cheese => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
+            !Sauce::isKnown($sauce) => throw UnableToHandleIngredient::dueToUnknownVariety($sauce, 'sauce'),
+            !Cheese::isKnown($cheese) => throw UnableToHandleIngredient::dueToUnknownVariety($cheese, 'cheese'),
             default => [$sauce, $cheese, ...$meats],
         };
     }

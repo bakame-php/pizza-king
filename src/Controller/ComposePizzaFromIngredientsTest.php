@@ -121,7 +121,6 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-        $this->expectExceptionMessage('`red` is an invalid or an unknown ingredient.');
 
         $controller($request, new Response());
     }
