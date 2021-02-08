@@ -32,11 +32,15 @@ final class GetPizzaIngredientByName implements StatusCodeInterface
         }
 
         $ingredient = $this->pizzaiolo->getIngredientFromName($name);
-        $stream = $this->renderer->ingredientToStream($ingredient);
 
-        return $response
+        $response = $response
             ->withStatus(self::STATUS_OK)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($stream);
+            ->withHeader('Content-Type', 'application/json');
+
+        $body = $response->getBody();
+        $body->write($this->renderer->ingredientToJson($ingredient));
+        $body->rewind();
+
+        return $response;
     }
 }

@@ -10,8 +10,6 @@ use Bakame\PizzaKing\Service\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Response;
 use function json_encode;
 
@@ -22,13 +20,8 @@ final class GetPizzaIngredientByNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $streamFactory->method('createStream')->will(
-            self::returnCallback([new StreamFactory(), 'createStream'])
-        );
-        $renderer = new IngredientRenderer($streamFactory);
+        $renderer = new IngredientRenderer();
         $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
-
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');
@@ -43,8 +36,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_no_ingredient_name_is_given(): void
     {
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -58,8 +50,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

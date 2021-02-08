@@ -48,7 +48,7 @@ final class Pizzaiolo
             throw UnableToHandleIngredient::dueToMissingIngredient('pizza name');
         }
 
-        return match (strtolower($name)) {
+        return match ($name) {
             'reine', 'queen' => $this->composeQueen($basePrice),
             'napolitaine', 'napolitana' => $this->composeNapolitana($basePrice),
             'carnivore' => $this->composeCarnivore($basePrice),

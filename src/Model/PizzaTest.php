@@ -57,7 +57,7 @@ final class PizzaTest extends TestCase
     public function it_fails_to_compose_a_pizza_with_a_negative_price(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
-        $this->expectExceptionMessage('`pizza` can not be priced at `-1.00 EUR`.');
+        $this->expectExceptionMessage('`pizza` can not have a base price of `-5.00 EUR`.');
 
         Pizza::fromIngredients(
             [Sauce::fromAlias('tomato'), Cheese::fromAlias('mozzarella')],

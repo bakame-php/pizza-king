@@ -7,8 +7,6 @@ namespace Bakame\PizzaKing\Service;
 use Bakame\PizzaKing\Model\Dish;
 use Bakame\PizzaKing\Model\Euro;
 use Bakame\PizzaKing\Model\Ingredient;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\StreamInterface;
 use function array_map;
 use function array_pop;
 use function explode;
@@ -18,24 +16,20 @@ use function trim;
 
 final class IngredientRenderer
 {
-    public function __construct(private StreamFactoryInterface $streamFactory)
-    {
-    }
-
-    public function dishToStream(Dish $dish, string|null $name = null): StreamInterface
+    public function dishToJson(Dish $dish, string|null $name = null): string
     {
         /** @var string $json */
         $json = json_encode($this->dishToArray($dish, $name));
 
-        return $this->streamFactory->createStream($json);
+        return $json;
     }
 
-    public function ingredientToStream(Ingredient $ingredient): StreamInterface
+    public function ingredientToJson(Ingredient $ingredient): string
     {
         /** @var string $json */
         $json = json_encode($this->ingredientToArray($ingredient));
 
-        return $this->streamFactory->createStream($json);
+        return $json;
     }
 
     public function dishToArray(Dish $dish, string|null $name = null): array

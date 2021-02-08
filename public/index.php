@@ -14,14 +14,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Psr7\Factory\ResponseFactory;
-use Slim\Psr7\Factory\StreamFactory;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
 /** @var array<string,int> $priceList */
 $priceList = require dirname(__DIR__).'/config/priceList.php';
 $pizzaiolo = new Pizzaiolo($priceList);
-$renderer = new IngredientRenderer(new StreamFactory());
+$renderer = new IngredientRenderer();
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();

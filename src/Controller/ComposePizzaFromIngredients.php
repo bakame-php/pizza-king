@@ -34,12 +34,16 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     {
         $ingredients = $this->parseQuery($request->getUri());
         $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
-        $stream = $this->renderer->dishToStream($pizza, 'custom pizza');
 
-        return $response
+        $response = $response
             ->withStatus(self::STATUS_OK)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($stream);
+            ->withHeader('Content-Type', 'application/json');
+
+        $body = $response->getBody();
+        $body->write($this->renderer->dishToJson($pizza, 'custom pizza'));
+        $body->rewind();
+
+        return $response;
     }
 
     /**

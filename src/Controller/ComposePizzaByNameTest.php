@@ -10,8 +10,6 @@ use Bakame\PizzaKing\Service\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Response;
 use function json_encode;
 
@@ -22,11 +20,7 @@ final class ComposePizzaByNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $streamFactory->method('createStream')->will(
-            self::returnCallback([new StreamFactory(), 'createStream'])
-        );
-        $renderer = new IngredientRenderer($streamFactory);
+        $renderer = new IngredientRenderer();
         $result = $renderer->dishToArray($pizzaiolo->composeFromName('carnivore'), 'carnivore');
 
         $request = $this->createStub(ServerRequestInterface::class);
@@ -42,8 +36,7 @@ final class ComposePizzaByNameTest extends TestCase
     /** @test */
     public function it_fails_if_no_pizza_name_is_given(): void
     {
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
+        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -57,8 +50,7 @@ final class ComposePizzaByNameTest extends TestCase
     /** @test */
     public function it_fails_if_the_pizza_name_is_unknown(): void
     {
-        $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
+        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

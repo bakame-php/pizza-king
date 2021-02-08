@@ -10,7 +10,6 @@ use Bakame\PizzaKing\Model\Meat;
 use Bakame\PizzaKing\Model\Pizza;
 use Bakame\PizzaKing\Model\Sauce;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamFactoryInterface;
 
 final class IngredientRendererTest extends TestCase
 {
@@ -18,7 +17,7 @@ final class IngredientRendererTest extends TestCase
 
     public function setUp(): void
     {
-        $this->transformer = new IngredientRenderer($this->createStub(StreamFactoryInterface::class));
+        $this->transformer = new IngredientRenderer();
     }
 
     /** @test */

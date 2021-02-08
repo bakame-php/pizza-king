@@ -15,11 +15,13 @@ final class Pizza implements Dish
 
     private const DEFAULT_PRICE = 4_00;
 
+    private Euro $basePrice;
+
     /** @var array<Meat> */
     private array $meats;
 
     private function __construct(
-        private Euro $basePrice,
+        Euro $basePrice,
         private Sauce $sauce,
         private Cheese $cheese,
         Meat ...$meats
@@ -29,11 +31,12 @@ final class Pizza implements Dish
             throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats');
         }
 
-        $this->meats = $meats;
-        $price = $this->price();
-        if (0 > $price->cents()) {
-            throw UnableToHandleIngredient::dueToWrongPrice($price, self::NAME);
+        if (0 > $basePrice->cents()) {
+            throw UnableToHandleIngredient::dueToWrongBasePrice($basePrice, self::NAME);
         }
+
+        $this->meats = $meats;
+        $this->basePrice = $basePrice;
     }
 
     /**

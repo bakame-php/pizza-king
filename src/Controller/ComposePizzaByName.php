@@ -31,11 +31,15 @@ final class ComposePizzaByName implements StatusCodeInterface
         }
 
         $pizza = $this->pizzaiolo->composeFromName($name);
-        $stream = $this->renderer->dishToStream($pizza, $name);
 
-        return $response
+        $response = $response
             ->withStatus(self::STATUS_OK)
-            ->withHeader('Content-Type', 'application/json')
-            ->withBody($stream);
+            ->withHeader('Content-Type', 'application/json');
+
+        $body = $response->getBody();
+        $body->write($this->renderer->dishToJson($pizza, $name));
+        $body->rewind();
+
+        return $response;
     }
 }
