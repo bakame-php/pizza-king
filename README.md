@@ -85,7 +85,9 @@ make rest
 Current endpoints:
 
 ````php
+GET /ingredient/{name} 
 GET /pizza/{name} 
+GET /compose?sauce=[typeofsauce]&cheese=[typeofcheese]&meat=[typofmeeat1]&meat=[typofmeeat2]
 ````
 
 Testing
