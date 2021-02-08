@@ -66,6 +66,7 @@ The following PHP features are used:
 - [named parameters](https://wiki.php.net/rfc/named_params)
 - [match expression](https://wiki.php.net/rfc/match_expression_v2)
 - [constructor promotion](https://wiki.php.net/rfc/constructor_promotion)
+- [union types](https://wiki.php.net/rfc/union_types_v2)
 
 #### PHP 7.4
 
@@ -82,12 +83,12 @@ A simple REST API can be use by running
 make rest
 ```
 
-Current endpoints:
+Available endpoints:
 
 ````php
-GET /ingredient/{name} 
-GET /pizza/{name} 
-GET /compose?sauce=[typeofsauce]&cheese=[typeofcheese]&meat=[typofmeeat1]&meat=[typofmeeat2]
+GET /ingredients/{name} 
+GET /pizzas?sauce=sauce&cheese=cheese&meat=meat1&meat=meat2
+GET /pizzas/{name} 
 ````
 
 Testing

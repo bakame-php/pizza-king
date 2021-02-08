@@ -18,19 +18,10 @@ use Slim\Psr7\Factory\StreamFactory;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-$priceList = [
-    'pizza' => 4_00,
-    'tomato' => 1_00,
-    'cream' => 1_00,
-    'mozzarella' => 3_00,
-    'goat' => 2_00,
-    'ham' => 2_00,
-    'pepperoni' => 4_00,
-];
-
+/** @var array<string,int> $priceList */
+$priceList = require dirname(__DIR__).'/config/priceList.php';
 $pizzaiolo = new Pizzaiolo($priceList);
-$streamFactory = new StreamFactory();
-$transformer = new IngredientTransformer();
+$transformer = new IngredientTransformer(new StreamFactory());
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
@@ -41,11 +32,11 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     bool $displayErrorDetails,
     bool $logErrors,
     bool $logErrorDetails,
-    ?LoggerInterface $logger = null,
+    LoggerInterface|null $logger = null,
 ): ResponseInterface => (new HttpConverter(new ResponseFactory()))
     ->toJsonResponse((new ExceptionToProblemConverter())->toApiProblem($exception)));
 
-$app->get('/compose', new ComposePizzaFromIngredients($pizzaiolo, $transformer, $streamFactory));
-$app->get('/pizza/{name}', new ComposePizzaByName($pizzaiolo, $transformer, $streamFactory));
-$app->get('/ingredient/{name}', new GetPizzaIngredientByName($pizzaiolo, $transformer, $streamFactory));
+$app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $transformer));
+$app->get('/pizzas/{name}', new ComposePizzaByName($pizzaiolo, $transformer));
+$app->get('/ingredients/{name}', new GetPizzaIngredientByName($pizzaiolo, $transformer));
 $app->run();
