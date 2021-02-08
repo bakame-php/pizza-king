@@ -9,6 +9,7 @@ use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Service\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use function gettype;
@@ -21,6 +22,7 @@ final class ComposePizzaByName implements StatusCodeInterface
 
     /**
      * @throws InvalidArgumentException
+     * @throws JsonException
      * @throws CanNotProcessOrder
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface

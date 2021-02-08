@@ -13,6 +13,7 @@ use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Bakame\PizzaKing\Service\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
+use JsonException;
 use League\Uri\Components\Query;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,6 +29,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     }
 
     /**
+     * @throws JsonException
      * @throws CanNotProcessOrder
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
