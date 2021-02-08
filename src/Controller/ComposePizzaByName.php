@@ -6,7 +6,7 @@ namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\CanNotProcessOrder;
 use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Service\IngredientTransformer;
+use Bakame\PizzaKing\Service\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -15,7 +15,7 @@ use function gettype;
 
 final class ComposePizzaByName implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientTransformer $transformer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientRenderer $renderer)
     {
     }
 
@@ -31,7 +31,7 @@ final class ComposePizzaByName implements StatusCodeInterface
         }
 
         $pizza = $this->pizzaiolo->composeFromName($name);
-        $stream = $this->transformer->dishToStream($pizza, $name);
+        $stream = $this->renderer->dishToStream($pizza, $name);
 
         return $response
             ->withStatus(self::STATUS_OK)

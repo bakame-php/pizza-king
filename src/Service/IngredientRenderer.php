@@ -16,7 +16,7 @@ use function json_encode;
 use function strtolower;
 use function trim;
 
-final class IngredientTransformer
+final class IngredientRenderer
 {
     public function __construct(private StreamFactoryInterface $streamFactory)
     {

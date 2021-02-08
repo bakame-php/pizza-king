@@ -7,7 +7,7 @@ use Bakame\PizzaKing\Controller\ComposePizzaFromIngredients;
 use Bakame\PizzaKing\Controller\GetPizzaIngredientByName;
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Service\ExceptionToProblemConverter;
-use Bakame\PizzaKing\Service\IngredientTransformer;
+use Bakame\PizzaKing\Service\IngredientRenderer;
 use Crell\ApiProblem\HttpConverter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,7 +21,7 @@ require dirname(__DIR__).'/vendor/autoload.php';
 /** @var array<string,int> $priceList */
 $priceList = require dirname(__DIR__).'/config/priceList.php';
 $pizzaiolo = new Pizzaiolo($priceList);
-$transformer = new IngredientTransformer(new StreamFactory());
+$renderer = new IngredientRenderer(new StreamFactory());
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
@@ -36,7 +36,7 @@ $errorMiddleware->setDefaultErrorHandler(fn (
 ): ResponseInterface => (new HttpConverter(new ResponseFactory()))
     ->toJsonResponse((new ExceptionToProblemConverter())->toApiProblem($exception)));
 
-$app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $transformer));
-$app->get('/pizzas/{name}', new ComposePizzaByName($pizzaiolo, $transformer));
-$app->get('/ingredients/{name}', new GetPizzaIngredientByName($pizzaiolo, $transformer));
+$app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $renderer));
+$app->get('/pizzas/{name}', new ComposePizzaByName($pizzaiolo, $renderer));
+$app->get('/ingredients/{name}', new GetPizzaIngredientByName($pizzaiolo, $renderer));
 $app->run();

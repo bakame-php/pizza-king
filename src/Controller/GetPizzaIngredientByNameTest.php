@@ -6,7 +6,7 @@ namespace Bakame\PizzaKing\Controller;
 
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
-use Bakame\PizzaKing\Service\IngredientTransformer;
+use Bakame\PizzaKing\Service\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,14 +26,14 @@ final class GetPizzaIngredientByNameTest extends TestCase
         $streamFactory->method('createStream')->will(
             self::returnCallback([new StreamFactory(), 'createStream'])
         );
-        $transformer = new IngredientTransformer($streamFactory);
-        $result = $transformer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
+        $renderer = new IngredientRenderer($streamFactory);
+        $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
 
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');
 
-        $controller = new GetPizzaIngredientByName($pizzaiolo, $transformer);
+        $controller = new GetPizzaIngredientByName($pizzaiolo, $renderer);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -44,7 +44,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     public function it_fails_if_no_ingredient_name_is_given(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer($streamFactory));
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -59,7 +59,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer($streamFactory));
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer($streamFactory));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

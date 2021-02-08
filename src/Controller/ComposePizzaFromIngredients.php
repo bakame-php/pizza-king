@@ -10,7 +10,7 @@ use Bakame\PizzaKing\Model\Meat;
 use Bakame\PizzaKing\Model\Pizzaiolo;
 use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
-use Bakame\PizzaKing\Service\IngredientTransformer;
+use Bakame\PizzaKing\Service\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use League\Uri\Components\Query;
@@ -23,7 +23,7 @@ use function reset;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientTransformer $transformer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientRenderer $renderer)
     {
     }
 
@@ -34,7 +34,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     {
         $ingredients = $this->parseQuery($request->getUri());
         $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
-        $stream = $this->transformer->dishToStream($pizza, 'custom pizza');
+        $stream = $this->renderer->dishToStream($pizza, 'custom pizza');
 
         return $response
             ->withStatus(self::STATUS_OK)
