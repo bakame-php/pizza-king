@@ -11,9 +11,9 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza(): void
     {
-        $sauce = Sauce::fromName('tomato');
-        $cheese = Cheese::fromName('mozzarella');
-        $meat = Meat::fromName('pepperoni');
+        $sauce = Sauce::fromAlias('tomato');
+        $cheese = Cheese::fromAlias('mozzarella');
+        $meat = Meat::fromAlias('pepperoni');
         $pizza = Pizza::fromIngredients([$sauce, $cheese, $meat]);
         $ingredients = $pizza->ingredients();
 
@@ -30,8 +30,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_without_meat(): void
     {
-        $sauce = Sauce::fromName('tomato');
-        $cheese = Cheese::fromName('mozzarella');
+        $sauce = Sauce::fromAlias('tomato');
+        $cheese = Cheese::fromAlias('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $ingredients = $pizza->ingredients();
         self::assertCount(2, $ingredients);
@@ -43,8 +43,8 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_composes_a_pizza_with_a_difference_base_price(): void
     {
-        $sauce = Sauce::fromName('tomato');
-        $cheese = Cheese::fromName('mozzarella');
+        $sauce = Sauce::fromAlias('tomato');
+        $cheese = Cheese::fromAlias('mozzarella');
         $pizza = Pizza::fromIngredients([$sauce, $cheese]);
         $altPizza = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
         self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
@@ -60,7 +60,7 @@ final class PizzaTest extends TestCase
         $this->expectExceptionMessage('`pizza` can not be priced at `-1.00 EUR`.');
 
         Pizza::fromIngredients(
-            [Sauce::fromName('tomato'), Cheese::fromName('mozzarella')],
+            [Sauce::fromAlias('tomato'), Cheese::fromAlias('mozzarella')],
             Euro::fromCents(-5_00)
         );
     }
@@ -75,8 +75,8 @@ final class PizzaTest extends TestCase
         $ananas->method('price')->willReturn(Euro::fromCents(30_00));
 
         Pizza::fromIngredients([
-            Cheese::fromName('chevre'),
-            Sauce::fromName('sauce TomAte'),
+            Cheese::fromAlias('chevre'),
+            Sauce::fromAlias('sauce TomAte'),
             $ananas,
         ]);
     }

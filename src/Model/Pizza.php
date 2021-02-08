@@ -77,6 +77,11 @@ final class Pizza implements Dish
         return self::NAME;
     }
 
+    public function alias(): string
+    {
+        return self::NAME;
+    }
+
     public function ingredients(): array
     {
         return [$this->cheese, $this->sauce, ...$this->meats];

@@ -20,10 +20,10 @@ final class IngredientTransformer
         $path = explode('\\', $dish::class);
         $data = [
             'type' => strtolower(array_pop($path)),
-            'name' => $dish->name(),
-            'basePrice' => $this->priceToArray($dish->basePrice()),
+            'name' => $dish->alias(),
+            'basePrice' => $this->euroToArray($dish->basePrice()),
             'ingredients' => array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $dish->ingredients()),
-            'price' => $this->priceToArray($dish->price()),
+            'price' => $this->euroToArray($dish->price()),
         ];
 
         if (null !== $name) {
@@ -33,7 +33,7 @@ final class IngredientTransformer
         return $data;
     }
 
-    public function priceToArray(Euro $euro): array
+    public function euroToArray(Euro $euro): array
     {
         return [
             'currency' => $euro->currency(),
@@ -47,8 +47,8 @@ final class IngredientTransformer
 
         return [
             'type' => strtolower(array_pop($path)),
-            'name' => $ingredient->name(),
-            'price' => $this->priceToArray($ingredient->price()),
+            'name' => $ingredient->alias(),
+            'price' => $this->euroToArray($ingredient->price()),
         ];
     }
 }

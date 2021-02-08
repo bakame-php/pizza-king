@@ -30,9 +30,9 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->pizzaiolo->composeQueen();
 
         self::assertCount(3, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('tomato'), $pizza->ingredients());
-        self::assertContainsEquals(Meat::fromName('jambon'), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::fromName('mozzarella'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(10_00), $pizza->price());
         self::assertEquals($pizza, $this->pizzaiolo->composeFromName('queen'));
     }
@@ -42,8 +42,8 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->pizzaiolo->composeNapolitana();
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('tomato'), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::fromName('mozzarella'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
         self::assertEquals($pizza, $this->pizzaiolo->composeFromName('napolitana'));
     }
@@ -53,8 +53,8 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->pizzaiolo->composeGoat();
 
         self::assertCount(2, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('tomato'), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::fromName('chevre'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('chevre'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(7_00), $pizza->price());
         self::assertEquals($pizza, $this->pizzaiolo->composeFromName('chevre'));
     }
@@ -64,10 +64,10 @@ final class PizzaKingTest extends TestCase
         $pizza = $this->pizzaiolo->composeCarnivore();
 
         self::assertCount(4, $pizza->ingredients());
-        self::assertContainsEquals(Sauce::fromName('creme'), $pizza->ingredients());
-        self::assertContainsEquals(Cheese::fromName('mozzarella'), $pizza->ingredients());
-        self::assertContainsEquals(Meat::fromName('jambon'), $pizza->ingredients());
-        self::assertContainsEquals(Meat::fromName('pepperoni'), $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('creme'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('pepperoni'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(14_00), $pizza->price());
         self::assertEquals($pizza, $this->pizzaiolo->composeFromName('carnivore'));
     }

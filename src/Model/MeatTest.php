@@ -11,7 +11,7 @@ final class MeatTest extends TestCase
     /** @test */
     public function it_can_create_pepperoni_meat(): void
     {
-        $sauce = Meat::fromName('PePpeROnI');
+        $sauce = Meat::fromAlias('PePpeROnI');
 
         self::assertSame('pepperoni', $sauce->name());
         self::assertEquals(Euro::fromCents(400), $sauce->price());
@@ -21,9 +21,10 @@ final class MeatTest extends TestCase
     public function it_can_create_pepperoni_meat_with_specified_price(): void
     {
         $price = Euro::fromCents(10_00);
-        $sauce = Meat::fromName('PEPPERONI', $price);
+        $sauce = Meat::fromAlias('PEPPERONI', $price);
 
         self::assertSame('pepperoni', $sauce->name());
+        self::assertSame('pepperoni', $sauce->alias());
         self::assertSame($price, $sauce->price());
     }
 
@@ -33,7 +34,7 @@ final class MeatTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`pepperoni` can not be priced at `-0.01 EUR`.');
 
-        Meat::fromName('pepperoni', Euro::fromCents(-1));
+        Meat::fromAlias('pepperoni', Euro::fromCents(-1));
     }
 
     /** @test */
@@ -41,15 +42,16 @@ final class MeatTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        Meat::fromName('pork', Euro::fromCents(2_00));
+        Meat::fromAlias('pork', Euro::fromCents(2_00));
     }
 
     /** @test */
     public function it_can_create_ham_meat(): void
     {
-        $sauce = Meat::fromName('JaMbOn');
+        $sauce = Meat::fromAlias('JaMbOn');
 
-        self::assertSame('jambon', $sauce->name());
+        self::assertSame('ham', $sauce->name());
+        self::assertSame('jambon', $sauce->alias());
         self::assertEquals(Euro::fromCents(2_00), $sauce->price());
     }
 
@@ -57,9 +59,10 @@ final class MeatTest extends TestCase
     public function it_can_create_ham_meat_with_specified_unit_price(): void
     {
         $price = Euro::fromCents(4_00);
-        $sauce = Meat::fromName('JAMBON', $price);
+        $sauce = Meat::fromAlias('JAMBON', $price);
 
-        self::assertSame('jambon', $sauce->name());
+        self::assertSame('ham', $sauce->name());
+        self::assertSame('jambon', $sauce->alias());
         self::assertSame($price, $sauce->price());
     }
 }

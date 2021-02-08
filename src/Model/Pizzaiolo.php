@@ -9,20 +9,35 @@ use function array_map;
 final class Pizzaiolo
 {
     /**
+     * @param array<string,int> $priceList
+     */
+    public function __construct(private array $priceList = [])
+    {
+    }
+
+    /**
      * @param array<string> $names
      */
     public function composeFromIngredients(array $names, Euro $basePrice = null): Pizza
     {
-        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromName'], $names), $basePrice);
+        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromName'], $names), $this->ingredientPrice('pizza', $basePrice));
     }
 
     public function getIngredientFromName(string $name, Euro $price = null): Ingredient
     {
         return match (true) {
-            Cheese::isKnown($name) => Cheese::fromName($name, $price),
-            Sauce::isKnown($name) => Sauce::fromName($name, $price),
-            Meat::isKnown($name) => Meat::fromName($name, $price),
+            null !== Cheese::fetchAlias($name) => Cheese::fromAlias($name, $this->ingredientPrice(Cheese::fetchAlias($name), $price)),
+            null !== Sauce::fetchAlias($name) => Sauce::fromAlias($name, $this->ingredientPrice(Sauce::fetchAlias($name), $price)),
+            null !== Meat::fetchAlias($name) => Meat::fromAlias($name, $this->ingredientPrice(Meat::fetchAlias($name), $price)),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
+        };
+    }
+
+    private function ingredientPrice(string|null $name, Euro|null $price): Euro|null
+    {
+        return match (true) {
+            null === $name || !isset($this->priceList[$name]) => $price,
+            default => Euro::fromCents($this->priceList[$name]),
         };
     }
 

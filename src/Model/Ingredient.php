@@ -8,5 +8,7 @@ interface Ingredient
 {
     public function name(): string;
 
+    public function alias(): string;
+
     public function price(): Euro;
 }

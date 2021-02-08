@@ -29,7 +29,7 @@ final class IngredientTransformerTest extends TestCase
         ];
         $price = Euro::fromCents(1_000_00);
 
-        self::assertSame($expected, $this->transformer->priceToArray($price));
+        self::assertSame($expected, $this->transformer->euroToArray($price));
     }
 
     /** @test */
@@ -43,7 +43,7 @@ final class IngredientTransformerTest extends TestCase
                 'amount' => '1.00',
             ],
         ];
-        $ingredient = Cheese::fromName('MozZaRelLA', Euro::fromCents(1_00));
+        $ingredient = Cheese::fromAlias('MozZaRelLA', Euro::fromCents(1_00));
 
         self::assertSame($expected, $this->transformer->ingredientToArray($ingredient));
     }
@@ -83,8 +83,8 @@ final class IngredientTransformerTest extends TestCase
         ];
 
         $pizza = Pizza::fromIngredients([
-            Sauce::fromName('tomato', Euro::fromCents(1_00)),
-            Cheese::fromName('goat', Euro::fromCents(2_00)),
+            Sauce::fromAlias('tomato', Euro::fromCents(1_00)),
+            Cheese::fromAlias('goat', Euro::fromCents(2_00)),
         ]);
 
         self::assertSame($expected, $this->transformer->dishToArray($pizza));
@@ -133,9 +133,9 @@ final class IngredientTransformerTest extends TestCase
         ];
 
         $pizza = Pizza::fromIngredients([
-            Cheese::fromName('goat', Euro::fromCents(1_00)),
-            Sauce::fromName('tomato', Euro::fromCents(2_00)),
-            Meat::fromName('jambon', Euro::fromCents(3_00)),
+            Cheese::fromAlias('goat', Euro::fromCents(1_00)),
+            Sauce::fromAlias('tomato', Euro::fromCents(2_00)),
+            Meat::fromAlias('jambon', Euro::fromCents(3_00)),
         ]);
 
         self::assertSame($expected, $this->transformer->dishToArray($pizza));

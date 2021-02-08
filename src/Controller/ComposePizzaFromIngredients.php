@@ -62,7 +62,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
             }
 
-            if (!Meat::isKnown($value)) {
+            if (null === Meat::fetchAlias($value)) {
                 throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat');
             }
 
@@ -92,8 +92,8 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
             null === $cheese => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
-            !Sauce::isKnown($sauce) => throw UnableToHandleIngredient::dueToUnknownVariety($sauce, 'sauce'),
-            !Cheese::isKnown($cheese) => throw UnableToHandleIngredient::dueToUnknownVariety($cheese, 'cheese'),
+            null === Sauce::fetchAlias($sauce) => throw UnableToHandleIngredient::dueToUnknownVariety($sauce, 'sauce'),
+            null === Cheese::fetchAlias($cheese) => throw UnableToHandleIngredient::dueToUnknownVariety($cheese, 'cheese'),
             default => [$sauce, $cheese, ...$meats],
         };
     }
