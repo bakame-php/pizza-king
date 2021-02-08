@@ -22,22 +22,23 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_returns_the_price_of_a_pizza(): void
     {
         $pizzaiolo = new Pizzaiolo();
-        $transformer = new IngredientTransformer();
-        $result = $transformer->dishToArray($pizzaiolo->composeFromIngredients([
-            'creme', 'mozzarella', 'jambon', 'pepperoni',
-        ]), 'customized');
 
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
         $streamFactory->method('createStream')->will(
             self::returnCallback([new StreamFactory(), 'createStream'])
         );
 
+        $transformer = new IngredientTransformer($streamFactory);
+        $result = $transformer->dishToArray($pizzaiolo->composeFromIngredients([
+            'creme', 'mozzarella', 'jambon', 'pepperoni',
+        ]), 'custom pizza');
+
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=jambon&meat=pepperoni');
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $controller = new ComposePizzaFromIngredients($pizzaiolo, $transformer, $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $transformer);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -45,10 +46,25 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     }
 
     /** @test */
+    public function it_fails_if_no_query_string_is_present(): void
+    {
+        $streamFactory = $this->createStub(StreamFactoryInterface::class);
+
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getQuery')->willReturn('');
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $this->expectException(InvalidArgumentException::class);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
+        $controller($request, new Response());
+    }
+
+    /** @test */
     public function it_fails_if_the_request_body_is_not_parsable(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('');
@@ -64,7 +80,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_meat_list_is_invalid(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=ananas');
@@ -80,7 +96,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_meat_list_is_too_big(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=jambon&meat=jambon&meat=jambon');
@@ -98,7 +114,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_meat_value_is_null(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&meat');
@@ -113,7 +129,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_sauce_is_not_supported(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=red&cheese=mozzarella');
@@ -129,7 +145,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_sauce_value_is_null(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce&cheese=mozzarella');
@@ -144,7 +160,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_cheese_value_is_null(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese');
@@ -159,7 +175,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_the_cheese_value_is_invalid(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=jambon');
@@ -174,7 +190,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_fails_if_there_is_too_many_cheese(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&cheese=goat');

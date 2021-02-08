@@ -11,18 +11,13 @@ use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use function gettype;
 use function is_string;
-use function json_encode;
 
 final class GetPizzaIngredientByName implements StatusCodeInterface
 {
-    public function __construct(
-        private Pizzaiolo $pizzaiolo,
-        private IngredientTransformer $transformer,
-        private StreamFactoryInterface $streamFactory
-    ) {
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientTransformer $transformer)
+    {
     }
 
     /**
@@ -37,13 +32,11 @@ final class GetPizzaIngredientByName implements StatusCodeInterface
         }
 
         $ingredient = $this->pizzaiolo->getIngredientFromName($name);
-        $presentation = $this->transformer->ingredientToArray($ingredient);
-        /** @var string $body */
-        $body = json_encode($presentation);
+        $stream = $this->transformer->ingredientToStream($ingredient);
 
         return $response
             ->withStatus(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body));
+            ->withBody($stream);
     }
 }

@@ -21,18 +21,19 @@ final class GetPizzaIngredientByNameTest extends TestCase
     public function it_returns_the_ingredient(): void
     {
         $pizzaiolo = new Pizzaiolo();
-        $transformer = new IngredientTransformer();
-        $result = $transformer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
 
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
         $streamFactory->method('createStream')->will(
             self::returnCallback([new StreamFactory(), 'createStream'])
         );
+        $transformer = new IngredientTransformer($streamFactory);
+        $result = $transformer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
+
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');
 
-        $controller = new GetPizzaIngredientByName($pizzaiolo, $transformer, $streamFactory);
+        $controller = new GetPizzaIngredientByName($pizzaiolo, $transformer);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -43,7 +44,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     public function it_fails_if_no_ingredient_name_is_given(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -58,7 +59,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer(), $streamFactory);
+        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientTransformer($streamFactory));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

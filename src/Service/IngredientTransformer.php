@@ -7,14 +7,37 @@ namespace Bakame\PizzaKing\Service;
 use Bakame\PizzaKing\Model\Dish;
 use Bakame\PizzaKing\Model\Euro;
 use Bakame\PizzaKing\Model\Ingredient;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use function array_map;
 use function array_pop;
 use function explode;
+use function json_encode;
 use function strtolower;
 use function trim;
 
 final class IngredientTransformer
 {
+    public function __construct(private StreamFactoryInterface $streamFactory)
+    {
+    }
+
+    public function dishToStream(Dish $dish, string|null $name = null): StreamInterface
+    {
+        /** @var string $json */
+        $json = json_encode($this->dishToArray($dish, $name));
+
+        return $this->streamFactory->createStream($json);
+    }
+
+    public function ingredientToStream(Ingredient $ingredient): StreamInterface
+    {
+        /** @var string $json */
+        $json = json_encode($this->ingredientToArray($ingredient));
+
+        return $this->streamFactory->createStream($json);
+    }
+
     public function dishToArray(Dish $dish, string|null $name = null): array
     {
         $path = explode('\\', $dish::class);

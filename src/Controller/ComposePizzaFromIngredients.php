@@ -12,23 +12,19 @@ use Bakame\PizzaKing\Model\Sauce;
 use Bakame\PizzaKing\Model\UnableToHandleIngredient;
 use Bakame\PizzaKing\Service\IngredientTransformer;
 use Fig\Http\Message\StatusCodeInterface;
+use InvalidArgumentException;
 use League\Uri\Components\Query;
-use League\Uri\Contracts\QueryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriInterface;
 use function array_reduce;
 use function count;
-use function json_encode;
 use function reset;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
-    public function __construct(
-        private Pizzaiolo $pizzaiolo,
-        private IngredientTransformer $transformer,
-        private StreamFactoryInterface $streamFactory
-    ) {
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientTransformer $transformer)
+    {
     }
 
     /**
@@ -36,18 +32,14 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $query = Query::createFromUri($request->getUri());
-        $ingredients = $this->parseQuery($query);
+        $ingredients = $this->parseQuery($request->getUri());
         $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
-        $presentation = $this->transformer->dishToArray($pizza, 'customized');
-
-        /** @var string $body */
-        $body = json_encode($presentation);
+        $stream = $this->transformer->dishToStream($pizza, 'custom pizza');
 
         return $response
             ->withStatus(self::STATUS_OK)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->streamFactory->createStream($body));
+            ->withBody($stream);
     }
 
     /**
@@ -55,8 +47,13 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      *
      * @return array<string>
      */
-    private function parseQuery(QueryInterface $query): array
+    private function parseQuery(UriInterface $uri): array
     {
+        $query = Query::createFromUri($uri);
+        if (0 === count($query)) {
+            throw new InvalidArgumentException('query string is missing.');
+        }
+
         $reducer = function (array $carry, string|null $value): array {
             if (null === $value) {
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
