@@ -77,19 +77,142 @@ The following PHP features are used:
 REST API
 -------
 
-A simple REST API can be use by running
+A simple REST API can be accessed by running
 
 ```
 make rest
 ```
 
-Available endpoints:
+### Get Ingredient by name
 
-````php
+```bash
 GET /ingredients/{name} 
-GET /pizzas?sauce=sauce&cheese=cheese&meat=meat1&meat=meat2
-GET /pizzas/{name} 
+```
+
+example: 
+
+```json
+GET /ingredients/pepperoni
+
+{
+  "type": "meat",
+  "name": "pepperoni",
+  "price": {
+    "currency": "EUR",
+    "amount": "4.00"
+  }
+}
+```
+
+### Get pizza by name
+
+```bash
+GET /pizzas/{name}
+```
+
+example:
+
+```json
+GET /pizzas/reine
+
+{
+    "type": "pizza",
+    "name": "reine",
+    "basePrice": {
+        "currency": "EUR",
+        "amount": "4.00"
+    },
+    "ingredients": [
+        {
+            "type": "cheese",
+            "name": "mozzarella",
+            "price": {
+                "currency": "EUR",
+                "amount": "3.00"
+            }
+        },
+        {
+            "type": "sauce",
+            "name": "tomato",
+            "price": {
+                "currency": "EUR",
+                "amount": "1.00"
+            }
+        },
+        {
+            "type": "meat",
+            "name": "jambon",
+            "price": {
+                "currency": "EUR",
+                "amount": "2.00"
+            }
+        }
+    ],
+    "price": {
+        "currency": "EUR",
+        "amount": "10.00"
+    }
+}
+```
+
+### Get pizza by ingredients
+
+```bash
+GET /pizzas{?sauce,cheese,meat*}
 ````
+
+example:
+
+```json
+GET /pizzas?sauce=creme&cheese=mozzarella&meat=pepperoni&meat=pepperoni
+
+{
+    "type": "pizza",
+    "name": "custom pizza",
+    "basePrice": {
+        "currency": "EUR",
+        "amount": "4.00"
+    },
+    "ingredients": [
+        {
+            "type": "cheese",
+            "name": "mozzarella",
+            "price": {
+                "currency": "EUR",
+                "amount": "3.00"
+            }
+        },
+        {
+            "type": "sauce",
+            "name": "creme",
+            "price": {
+                "currency": "EUR",
+                "amount": "1.00"
+            }
+        },
+        {
+            "type": "meat",
+            "name": "pepperoni",
+            "price": {
+                "currency": "EUR",
+                "amount": "4.00"
+            }
+        },
+        {
+            "type": "meat",
+            "name": "pepperoni",
+            "price": {
+                "currency": "EUR",
+                "amount": "4.00"
+            }
+        }
+    ],
+    "price": {
+        "currency": "EUR",
+        "amount": "16.00"
+    }
+}
+```
 
 Testing
 -------

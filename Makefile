@@ -2,8 +2,8 @@
 install:
 	@docker run --rm -it -v$(PWD):/app composer install
 
-# tests
-tests:
+# unit tests
+phpunit:
 	@docker run --rm -it -v$(PWD):/app --workdir=/app php:8.0-cli-alpine vendor/bin/phpunit
 
 # psalm
@@ -22,8 +22,8 @@ phpcs:
 phpmd:
 	@docker run --rm -it -v$(PWD):/app --workdir=/app php:8.0-cli-alpine vendor/bin/phpmd src text phpmd.xml --exclude=vendor --ansi
 
-# make website
+# rest api
 rest:
 	@docker run --rm -it -v$(PWD):/app --workdir=/app -p4000:4000 php:8.0-cli-alpine php -S 0.0.0.0:4000 -t public
 
-.PHONY: install tests psalm phpstan phpcs phpmd order
+.PHONY: install phpunit psalm phpstan phpcs phpmd rest
