@@ -1,4 +1,13 @@
 {
+    "name": "bakame/pizza-king",
+    "description": "Compose pizza the PHP8 style",
+    "keywords": [
+        "PHP8",
+        "ADR",
+        "example project"
+    ],
+    "license": "MIT",
+    "type": "project",
     "autoload": {
         "psr-4": {
             "Bakame\\PizzaKing\\": "src"
