@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Model;
+namespace Bakame\PizzaKing\Domain;
 
 final class UnableToHandleIngredient extends \InvalidArgumentException implements CanNotProcessOrder
 {

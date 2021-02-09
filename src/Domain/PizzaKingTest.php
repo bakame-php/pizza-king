@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Model;
+namespace Bakame\PizzaKing\Domain;
 
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ final class PizzaKingTest extends TestCase
      */
     public function createPizza(array $ingredients): Pizza
     {
-        return $this->pizzaiolo->composeFromIngredients($ingredients);
+        return $this->pizzaiolo->composePizzaFromIngredients($ingredients);
     }
 
     public function testReine(): void
@@ -34,7 +34,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
         self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(10_00), $pizza->price());
-        self::assertEquals($pizza, $this->pizzaiolo->composeFromName('queen'));
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('queen'));
     }
 
     public function testNapolitana(): void
@@ -45,7 +45,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
         self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
-        self::assertEquals($pizza, $this->pizzaiolo->composeFromName('napolitana'));
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('napolitana'));
     }
 
     public function testChevre(): void
@@ -56,7 +56,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
         self::assertContainsEquals(Cheese::fromAlias('chevre'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(7_00), $pizza->price());
-        self::assertEquals($pizza, $this->pizzaiolo->composeFromName('chevre'));
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('chevre'));
     }
 
     public function testCarnivore(): void
@@ -69,7 +69,7 @@ final class PizzaKingTest extends TestCase
         self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
         self::assertContainsEquals(Meat::fromAlias('pepperoni'), $pizza->ingredients());
         self::assertEquals(Euro::fromCents(14_00), $pizza->price());
-        self::assertEquals($pizza, $this->pizzaiolo->composeFromName('carnivore'));
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('carnivore'));
     }
 
     // Manque la sauce !

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Model;
+namespace Bakame\PizzaKing\Domain;
 
 use function array_map;
 
@@ -18,18 +18,18 @@ final class Pizzaiolo
     /**
      * @param array<string> $names
      */
-    public function composeFromIngredients(array $names, Euro $basePrice = null): Pizza
+    public function composePizzaFromIngredients(array $names, Euro $basePrice = null): Pizza
     {
-        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromName'], $names), $this->ingredientPrice('pizza', $basePrice));
+        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromAlias'], $names), $this->ingredientPrice('pizza', $basePrice));
     }
 
-    public function getIngredientFromName(string $name, Euro $price = null): Ingredient
+    public function getIngredientFromAlias(string $alias, Euro $price = null): Ingredient
     {
         return match (true) {
-            null !== Cheese::fetchAlias($name) => Cheese::fromAlias($name, $this->ingredientPrice(Cheese::fetchAlias($name), $price)),
-            null !== Sauce::fetchAlias($name) => Sauce::fromAlias($name, $this->ingredientPrice(Sauce::fetchAlias($name), $price)),
-            null !== Meat::fetchAlias($name) => Meat::fromAlias($name, $this->ingredientPrice(Meat::fetchAlias($name), $price)),
-            default => throw UnableToHandleIngredient::dueToUnknownIngredient($name),
+            null !== Cheese::findName($alias) => Cheese::fromAlias($alias, $this->ingredientPrice(Cheese::findName($alias), $price)),
+            null !== Sauce::findName($alias) => Sauce::fromAlias($alias, $this->ingredientPrice(Sauce::findName($alias), $price)),
+            null !== Meat::findName($alias) => Meat::fromAlias($alias, $this->ingredientPrice(Meat::findName($alias), $price)),
+            default => throw UnableToHandleIngredient::dueToUnknownIngredient($alias),
         };
     }
 
@@ -41,7 +41,7 @@ final class Pizzaiolo
         };
     }
 
-    public function composeFromName(string $name, Euro $basePrice = null): Pizza
+    public function composePizzaFromName(string $name, Euro $basePrice = null): Pizza
     {
         $name = strtolower(trim($name));
         if ('' === $name) {
@@ -59,21 +59,21 @@ final class Pizzaiolo
 
     public function composeQueen(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['tomato', 'jambon', 'mozzarella'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'jambon', 'mozzarella'], $basePrice);
     }
 
     public function composeNapolitana(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['tomato', 'mozzarella'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'mozzarella'], $basePrice);
     }
 
     public function composeGoat(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['tomato', 'chevre'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'chevre'], $basePrice);
     }
 
     public function composeCarnivore(Euro $basePrice = null): Pizza
     {
-        return $this->composeFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni'], $basePrice);
+        return $this->composePizzaFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni'], $basePrice);
     }
 }

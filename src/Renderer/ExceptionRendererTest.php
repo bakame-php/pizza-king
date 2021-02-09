@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Service;
+namespace Bakame\PizzaKing\Renderer;
 
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-final class ExceptionToProblemConverterTest extends TestCase
+final class ExceptionRendererTest extends TestCase
 {
     /** @test */
     public function it_converts_a_throwable_error_into_an_api_problem_and_keep_the_error_code(): void
     {
-        $converter = new ExceptionToProblemConverter();
+        $converter = new ExceptionRenderer();
         $exceptionCode = 42;
         $exception = new Exception('foobar', $exceptionCode);
         $problem = $converter->toApiProblem($exception);
@@ -30,7 +30,7 @@ final class ExceptionToProblemConverterTest extends TestCase
     /** @test */
     public function it_converts_a_throwable_error_into_an_api_problem_and_preserve_its_code(): void
     {
-        $converter = new ExceptionToProblemConverter();
+        $converter = new ExceptionRenderer();
         $exceptionCode = StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
         $exception = new Exception('foobar', $exceptionCode);
         $problem = $converter->toApiProblem($exception);
@@ -46,7 +46,7 @@ final class ExceptionToProblemConverterTest extends TestCase
     /** @test */
     public function it_converts_a_throwable_error_into_an_api_problem_and_exposes_the_full_trace(): void
     {
-        $converter = new ExceptionToProblemConverter('about:blank', ExceptionToProblemConverter::ADD_TRACING);
+        $converter = new ExceptionRenderer('about:blank', ExceptionRenderer::ADD_TRACING);
         $previous = new Exception('barbaz');
         $exceptionCode = StatusCodeInterface::STATUS_BAD_REQUEST;
         $exception = new RuntimeException('foobar', $exceptionCode, $previous);

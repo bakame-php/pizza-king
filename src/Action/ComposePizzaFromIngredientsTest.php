@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Controller;
+namespace Bakame\PizzaKing\Action;
 
-use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Model\UnableToHandleIngredient;
-use Bakame\PizzaKing\Service\IngredientRenderer;
+use Bakame\PizzaKing\Domain\Pizzaiolo;
+use Bakame\PizzaKing\Domain\UnableToHandleIngredient;
+use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +22,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $pizzaiolo = new Pizzaiolo();
 
         $renderer = new IngredientRenderer();
-        $result = $renderer->dishToArray($pizzaiolo->composeFromIngredients([
+        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients([
             'creme', 'mozzarella', 'jambon', 'pepperoni',
         ]), 'custom pizza');
 
@@ -123,7 +123,6 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
-
         $controller($request, new Response());
     }
 
@@ -138,6 +137,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
+
         $controller($request, new Response());
     }
 
@@ -152,6 +152,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
+
         $controller($request, new Response());
     }
 
@@ -166,6 +167,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
+
         $controller($request, new Response());
     }
 
@@ -180,6 +182,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $this->expectException(UnableToHandleIngredient::class);
+
         $controller($request, new Response());
     }
 }

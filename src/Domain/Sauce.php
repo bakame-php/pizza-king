@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Model;
+namespace Bakame\PizzaKing\Domain;
 
 use function strtolower;
 
@@ -10,7 +10,7 @@ final class Sauce implements Ingredient
 {
     private const TOMATO = 'tomato';
     private const CREAM = 'cream';
-    private const I18N = [
+    private const ALIASES = [
         self::TOMATO => self::TOMATO,
         'sauce tomate' => self::TOMATO,
         self::CREAM => self::CREAM,
@@ -35,21 +35,22 @@ final class Sauce implements Ingredient
         $this->alias = strtolower($alias ?? $this->name);
     }
 
-    public static function fetchAlias(string $name): string|null
+    public static function findName(string $alias): string|null
     {
-        return self::I18N[strtolower($name)] ?? null;
+        return self::ALIASES[strtolower($alias)] ?? null;
     }
 
-    public static function fromAlias(string $name, Euro $price = null): self
+    public static function fromAlias(string $alias, Euro $price = null): self
     {
-        if (null === self::fetchAlias($name)) {
-            throw UnableToHandleIngredient::dueToUnknownIngredient($name);
+        $name = self::findName($alias);
+        if (null === $name) {
+            throw UnableToHandleIngredient::dueToUnknownIngredient($alias);
         }
 
         return new self(
-            self::I18N[strtolower($name)],
-            $price ?? Euro::fromCents(self::PRICES[self::I18N[strtolower($name)]]),
-            $name
+            $name,
+            $price ?? Euro::fromCents(self::PRICES[$name]),
+            $alias
         );
     }
 

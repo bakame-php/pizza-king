@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Controller;
+namespace Bakame\PizzaKing\Action;
 
-use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Model\UnableToHandleIngredient;
-use Bakame\PizzaKing\Service\IngredientRenderer;
+use Bakame\PizzaKing\Domain\Pizzaiolo;
+use Bakame\PizzaKing\Domain\UnableToHandleIngredient;
+use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,7 +21,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
         $pizzaiolo = new Pizzaiolo();
 
         $renderer = new IngredientRenderer();
-        $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromName('jambon'));
+        $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromAlias('jambon'));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');

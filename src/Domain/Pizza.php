@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Model;
+namespace Bakame\PizzaKing\Domain;
 
 use function array_filter;
 use function array_reduce;
@@ -12,11 +12,9 @@ use function reset;
 final class Pizza implements Dish
 {
     private const NAME = 'pizza';
-
     private const DEFAULT_PRICE = 4_00;
 
     private Euro $basePrice;
-
     /** @var array<Meat> */
     private array $meats;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Controller;
+namespace Bakame\PizzaKing\Action;
 
-use Bakame\PizzaKing\Model\CanNotProcessOrder;
-use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Service\IngredientRenderer;
+use Bakame\PizzaKing\Domain\CanNotProcessOrder;
+use Bakame\PizzaKing\Domain\Pizzaiolo;
+use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use JsonException;
@@ -33,16 +33,9 @@ final class GetPizzaIngredientByName implements StatusCodeInterface
             throw new InvalidArgumentException('The ingredient name should be a string; '.gettype($name).' given.');
         }
 
-        $ingredient = $this->pizzaiolo->getIngredientFromName($name);
+        $ingredient = $this->pizzaiolo->getIngredientFromAlias($name);
 
-        $response = $response
-            ->withStatus(self::STATUS_OK)
-            ->withHeader('Content-Type', 'application/json');
-
-        $body = $response->getBody();
-        $body->write($this->renderer->ingredientToJson($ingredient));
-        $body->rewind();
-
-        return $response;
+        return $this->renderer->ingredientToJsonResponse($response, $ingredient)
+            ->withStatus(self::STATUS_OK);
     }
 }

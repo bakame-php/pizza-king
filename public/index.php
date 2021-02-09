@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Bakame\PizzaKing\Controller\ComposePizzaByName;
-use Bakame\PizzaKing\Controller\ComposePizzaFromIngredients;
-use Bakame\PizzaKing\Controller\GetPizzaIngredientByName;
-use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Service\ExceptionToProblemConverter;
-use Bakame\PizzaKing\Service\IngredientRenderer;
+use Bakame\PizzaKing\Action\ComposePizzaByName;
+use Bakame\PizzaKing\Action\ComposePizzaFromIngredients;
+use Bakame\PizzaKing\Action\GetPizzaIngredientByName;
+use Bakame\PizzaKing\Domain\Pizzaiolo;
+use Bakame\PizzaKing\Renderer\ExceptionRenderer;
+use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use Crell\ApiProblem\HttpConverter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,7 +33,7 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     bool $logErrorDetails,
     LoggerInterface|null $logger = null,
 ): ResponseInterface => (new HttpConverter(new ResponseFactory()))
-    ->toJsonResponse((new ExceptionToProblemConverter())->toApiProblem($exception)));
+    ->toJsonResponse((new ExceptionRenderer())->toApiProblem($exception)));
 
 $app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $renderer));
 $app->get('/pizzas/{name}', new ComposePizzaByName($pizzaiolo, $renderer));

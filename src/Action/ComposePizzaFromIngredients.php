@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Controller;
+namespace Bakame\PizzaKing\Action;
 
-use Bakame\PizzaKing\Model\CanNotProcessOrder;
-use Bakame\PizzaKing\Model\Cheese;
-use Bakame\PizzaKing\Model\Meat;
-use Bakame\PizzaKing\Model\Pizzaiolo;
-use Bakame\PizzaKing\Model\Sauce;
-use Bakame\PizzaKing\Model\UnableToHandleIngredient;
-use Bakame\PizzaKing\Service\IngredientRenderer;
+use Bakame\PizzaKing\Domain\CanNotProcessOrder;
+use Bakame\PizzaKing\Domain\Cheese;
+use Bakame\PizzaKing\Domain\Meat;
+use Bakame\PizzaKing\Domain\Pizzaiolo;
+use Bakame\PizzaKing\Domain\Sauce;
+use Bakame\PizzaKing\Domain\UnableToHandleIngredient;
+use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use JsonException;
@@ -34,18 +34,11 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $ingredients = $this->parseQuery($request->getUri());
-        $pizza = $this->pizzaiolo->composeFromIngredients($ingredients);
+        $ingredients = $this->getIngredientsFromUri($request->getUri());
+        $pizza = $this->pizzaiolo->composePizzaFromIngredients($ingredients);
 
-        $response = $response
-            ->withStatus(self::STATUS_OK)
-            ->withHeader('Content-Type', 'application/json');
-
-        $body = $response->getBody();
-        $body->write($this->renderer->dishToJson($pizza, 'custom pizza'));
-        $body->rewind();
-
-        return $response;
+        return $this->renderer->dishToJsonResponse($response, $pizza, 'custom pizza')
+            ->withStatus(self::STATUS_OK);
     }
 
     /**
@@ -53,11 +46,11 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
      *
      * @return array<string>
      */
-    private function parseQuery(UriInterface $uri): array
+    private function getIngredientsFromUri(UriInterface $uri): array
     {
         $query = Query::createFromUri($uri);
         if (0 === count($query)) {
-            throw new InvalidArgumentException('query string is missing.');
+            throw new InvalidArgumentException('query string is missing or contains no data.');
         }
 
         $reducer = function (array $carry, string|null $value): array {
@@ -65,7 +58,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
                 throw UnableToHandleIngredient::dueToMissingIngredient('meat');
             }
 
-            if (null === Meat::fetchAlias($value)) {
+            if (null === Meat::findName($value)) {
                 throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat');
             }
 
@@ -95,8 +88,8 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
             null === $cheese => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
-            null === Sauce::fetchAlias($sauce) => throw UnableToHandleIngredient::dueToUnknownVariety($sauce, 'sauce'),
-            null === Cheese::fetchAlias($cheese) => throw UnableToHandleIngredient::dueToUnknownVariety($cheese, 'cheese'),
+            null === Sauce::findName($sauce) => throw UnableToHandleIngredient::dueToUnknownVariety($sauce, 'sauce'),
+            null === Cheese::findName($cheese) => throw UnableToHandleIngredient::dueToUnknownVariety($cheese, 'cheese'),
             default => [$sauce, $cheese, ...$meats],
         };
     }

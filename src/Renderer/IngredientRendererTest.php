@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Service;
+namespace Bakame\PizzaKing\Renderer;
 
-use Bakame\PizzaKing\Model\Cheese;
-use Bakame\PizzaKing\Model\Euro;
-use Bakame\PizzaKing\Model\Meat;
-use Bakame\PizzaKing\Model\Pizza;
-use Bakame\PizzaKing\Model\Sauce;
+use Bakame\PizzaKing\Domain\Cheese;
+use Bakame\PizzaKing\Domain\Euro;
+use Bakame\PizzaKing\Domain\Meat;
+use Bakame\PizzaKing\Domain\Pizza;
+use Bakame\PizzaKing\Domain\Sauce;
 use PHPUnit\Framework\TestCase;
 
 final class IngredientRendererTest extends TestCase

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Service;
+namespace Bakame\PizzaKing\Renderer;
 
-use Bakame\PizzaKing\Model\Dish;
-use Bakame\PizzaKing\Model\Euro;
-use Bakame\PizzaKing\Model\Ingredient;
+use Bakame\PizzaKing\Domain\Dish;
+use Bakame\PizzaKing\Domain\Euro;
+use Bakame\PizzaKing\Domain\Ingredient;
 use JsonSerializable;
+use Psr\Http\Message\ResponseInterface;
 use function array_map;
 use function array_pop;
 use function explode;
@@ -23,25 +24,14 @@ use const JSON_UNESCAPED_SLASHES;
 
 final class IngredientRenderer
 {
-    public function dishToJson(Dish $dish, string|null $name = null): string
+    public function dishToJsonResponse(ResponseInterface $response, Dish $dish, string|null $name = null): ResponseInterface
     {
-        return $this->toJson($this->dishToArray($dish, $name));
+        return $this->toJsonResponse($this->dishToArray($dish, $name), $response);
     }
 
-    private function toJson(array|JsonSerializable $data): string
+    public function ingredientToJsonResponse(ResponseInterface $response, Ingredient $ingredient): ResponseInterface
     {
-        /** @var string $json */
-        $json = json_encode(
-            $data,
-            JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
-        );
-
-        return $json;
-    }
-
-    public function ingredientToJson(Ingredient $ingredient): string
-    {
-        return $this->toJson($this->ingredientToArray($ingredient));
+        return $this->toJsonResponse($this->ingredientToArray($ingredient), $response);
     }
 
     public function dishToArray(Dish $dish, string|null $name = null): array
@@ -79,5 +69,19 @@ final class IngredientRenderer
             'name' => $ingredient->alias(),
             'price' => $this->euroToArray($ingredient->price()),
         ];
+    }
+
+    private function toJsonResponse(array|JsonSerializable $data, ResponseInterface $response): ResponseInterface
+    {
+        /** @var string $json */
+        $json = json_encode($data, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
+
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        $body = $response->getBody();
+        $body->write($json);
+        $body->rewind();
+
+        return $response;
     }
 }
