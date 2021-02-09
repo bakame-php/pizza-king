@@ -77,10 +77,8 @@ final class IngredientRenderer
         $json = json_encode($data, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
 
         $response = $response->withHeader('Content-Type', 'application/json');
-
         $body = $response->getBody();
         $body->write($json);
-        $body->rewind();
 
         return $response;
     }

@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Response;
 use function json_encode;
 
-final class GetPizzaIngredientByNameTest extends TestCase
+final class GetIngredientByNameTest extends TestCase
 {
     /** @test */
     public function it_returns_the_ingredient(): void
@@ -26,7 +26,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');
 
-        $controller = new GetPizzaIngredientByName($pizzaiolo, $renderer);
+        $controller = new GetIngredientByName($pizzaiolo, $renderer);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -36,7 +36,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_no_ingredient_name_is_given(): void
     {
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -50,7 +50,7 @@ final class GetPizzaIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
-        $controller = new GetPizzaIngredientByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientRenderer());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');
