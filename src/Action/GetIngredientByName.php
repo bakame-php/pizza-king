@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing\Action;
 
+use Bakame\PizzaKing\Converter\IngredientConverter;
 use Bakame\PizzaKing\Domain\CanNotProcessOrder;
 use Bakame\PizzaKing\Domain\Pizzaiolo;
-use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use JsonException;
@@ -17,7 +17,7 @@ use function is_string;
 
 final class GetIngredientByName implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientRenderer $renderer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
     {
     }
 

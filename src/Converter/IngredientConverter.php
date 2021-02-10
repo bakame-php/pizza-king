@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Renderer;
+namespace Bakame\PizzaKing\Converter;
 
 use Bakame\PizzaKing\Domain\Dish;
 use Bakame\PizzaKing\Domain\Euro;
@@ -22,7 +22,7 @@ use const JSON_HEX_TAG;
 use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 
-final class IngredientRenderer
+final class IngredientConverter
 {
     public function dishToJsonResponse(ResponseInterface $response, Dish $dish, string|null $name = null): ResponseInterface
     {

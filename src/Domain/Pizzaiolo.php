@@ -18,30 +18,34 @@ final class Pizzaiolo
     /**
      * @param array<string> $names
      */
-    public function composePizzaFromIngredients(array $names, Euro $basePrice = null): Pizza
+    public function composePizzaFromIngredients(array $names): Pizza
     {
-        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromAlias'], $names), $this->ingredientPrice('pizza', $basePrice));
+        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromAlias'], $names), $this->ingredientPrice('pizza'));
     }
 
-    public function getIngredientFromAlias(string $alias, Euro $price = null): Ingredient
+    public function getIngredientFromAlias(string $alias): Ingredient
     {
         return match (true) {
-            null !== Cheese::findName($alias) => Cheese::fromAlias($alias, $this->ingredientPrice(Cheese::findName($alias), $price)),
-            null !== Sauce::findName($alias) => Sauce::fromAlias($alias, $this->ingredientPrice(Sauce::findName($alias), $price)),
-            null !== Meat::findName($alias) => Meat::fromAlias($alias, $this->ingredientPrice(Meat::findName($alias), $price)),
+            null !== Cheese::findName($alias) => Cheese::fromAlias($alias, $this->ingredientPrice(Cheese::findName($alias))),
+            null !== Sauce::findName($alias) => Sauce::fromAlias($alias, $this->ingredientPrice(Sauce::findName($alias))),
+            null !== Meat::findName($alias) => Meat::fromAlias($alias, $this->ingredientPrice(Meat::findName($alias))),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($alias),
         };
     }
 
-    private function ingredientPrice(string|null $name, Euro|null $price): Euro|null
+    private function ingredientPrice(string|null $name): Euro|null
     {
-        return match (true) {
-            null === $name || !isset($this->priceList[$name]) => $price,
-            default => Euro::fromCents($this->priceList[$name]),
-        };
+        /** @var int|null $amount */
+        $amount = $this->priceList[$name] ?? null;
+
+        if (null === $amount) {
+            return null;
+        }
+
+        return Euro::fromCents($amount);
     }
 
-    public function composePizzaFromName(string $name, Euro $basePrice = null): Pizza
+    public function composePizzaFromName(string $name): Pizza
     {
         $name = strtolower(trim($name));
         if ('' === $name) {
@@ -49,31 +53,31 @@ final class Pizzaiolo
         }
 
         return match ($name) {
-            'reine', 'queen' => $this->composeQueen($basePrice),
-            'napolitaine', 'napolitana' => $this->composeNapolitana($basePrice),
-            'carnivore' => $this->composeCarnivore($basePrice),
-            'chevre', 'goat' => $this->composeGoat($basePrice),
+            'reine', 'queen' => $this->composeQueen(),
+            'napolitaine', 'napolitana' => $this->composeNapolitana(),
+            'carnivore' => $this->composeCarnivore(),
+            'chevre', 'goat' => $this->composeGoat(),
             default => throw UnableToHandleIngredient::dueToUnknownVariety($name, 'pizza'),
         };
     }
 
-    public function composeQueen(Euro $basePrice = null): Pizza
+    public function composeQueen(): Pizza
     {
-        return $this->composePizzaFromIngredients(['tomato', 'jambon', 'mozzarella'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'jambon', 'mozzarella']);
     }
 
-    public function composeNapolitana(Euro $basePrice = null): Pizza
+    public function composeNapolitana(): Pizza
     {
-        return $this->composePizzaFromIngredients(['tomato', 'mozzarella'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'mozzarella']);
     }
 
-    public function composeGoat(Euro $basePrice = null): Pizza
+    public function composeGoat(): Pizza
     {
-        return $this->composePizzaFromIngredients(['tomato', 'chevre'], $basePrice);
+        return $this->composePizzaFromIngredients(['tomato', 'chevre']);
     }
 
-    public function composeCarnivore(Euro $basePrice = null): Pizza
+    public function composeCarnivore(): Pizza
     {
-        return $this->composePizzaFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni'], $basePrice);
+        return $this->composePizzaFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni']);
     }
 }

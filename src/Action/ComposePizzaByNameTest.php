@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing\Action;
 
+use Bakame\PizzaKing\Converter\IngredientConverter;
 use Bakame\PizzaKing\Domain\Pizzaiolo;
 use Bakame\PizzaKing\Domain\UnableToHandleIngredient;
-use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +20,7 @@ final class ComposePizzaByNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $renderer = new IngredientRenderer();
+        $renderer = new IngredientConverter();
         $result = $renderer->dishToArray($pizzaiolo->composePizzaFromName('carnivore'), 'carnivore');
 
         $request = $this->createStub(ServerRequestInterface::class);
@@ -36,7 +36,7 @@ final class ComposePizzaByNameTest extends TestCase
     /** @test */
     public function it_fails_if_no_pizza_name_is_given(): void
     {
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -50,7 +50,7 @@ final class ComposePizzaByNameTest extends TestCase
     /** @test */
     public function it_fails_if_the_pizza_name_is_unknown(): void
     {
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

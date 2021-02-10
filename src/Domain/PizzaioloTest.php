@@ -85,4 +85,25 @@ final class PizzaioloTest extends TestCase
 
         $this->pizzaiolo->composePizzaFromName('      ');
     }
+
+    /** @test */
+    public function it_uses_a_price_list_to_calculate_price(): void
+    {
+        $priceList = [
+            'pizza' => 1_00,
+            'tomato' => 1_00,
+            'cream' => 1_00,
+            'mozzarella' => 1_00,
+            'goat' => 1_00,
+            'ham' => 1_00,
+            'pepperoni' => 1_00,
+        ];
+
+        $pizzaiolo = new Pizzaiolo($priceList);
+
+        self::assertNotEquals(
+            $pizzaiolo->composeGoat()->price(),
+            $this->pizzaiolo->composeGoat()->price()
+        );
+    }
 }

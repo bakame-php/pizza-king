@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Renderer;
+namespace Bakame\PizzaKing\Converter;
 
 use Crell\ApiProblem\ApiProblem;
 use Fig\Http\Message\StatusCodeInterface;
@@ -14,7 +14,7 @@ use function array_key_last;
 /**
  * @SuppressWarnings(PHPMD.UndefinedVariable)
  */
-final class ExceptionRenderer implements StatusCodeInterface
+final class ExceptionConverter implements StatusCodeInterface
 {
     /** @var array<int,string> Map of standard HTTP status code/reason phrases */
     private const REASON_PHRASES = [
@@ -69,7 +69,7 @@ final class ExceptionRenderer implements StatusCodeInterface
         self::STATUS_INTERNAL_SERVER_ERROR => 'Internal Server Error',
         self::STATUS_NOT_IMPLEMENTED => 'Not Implemented',
         self::STATUS_BAD_GATEWAY => 'Bad Gateway',
-        self::STATUS_SERVICE_UNAVAILABLE => 'Renderer Unavailable',
+        self::STATUS_SERVICE_UNAVAILABLE => 'Converter Unavailable',
         self::STATUS_GATEWAY_TIMEOUT => 'Gateway Time-out',
         self::STATUS_VERSION_NOT_SUPPORTED => 'HTTP Version not supported',
         self::STATUS_VARIANT_ALSO_NEGOTIATES => 'Variant Also Negotiates',

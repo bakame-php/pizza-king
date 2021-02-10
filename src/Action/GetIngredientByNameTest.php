@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing\Action;
 
+use Bakame\PizzaKing\Converter\IngredientConverter;
 use Bakame\PizzaKing\Domain\Pizzaiolo;
 use Bakame\PizzaKing\Domain\UnableToHandleIngredient;
-use Bakame\PizzaKing\Renderer\IngredientRenderer;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +20,7 @@ final class GetIngredientByNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $renderer = new IngredientRenderer();
+        $renderer = new IngredientConverter();
         $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromAlias('jambon'));
 
         $request = $this->createStub(ServerRequestInterface::class);
@@ -36,7 +36,7 @@ final class GetIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_no_ingredient_name_is_given(): void
     {
-        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
@@ -50,7 +50,7 @@ final class GetIngredientByNameTest extends TestCase
     /** @test */
     public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
-        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientRenderer());
+        $controller = new GetIngredientByName(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');

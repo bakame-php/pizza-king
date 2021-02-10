@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bakame\PizzaKing\Renderer;
+namespace Bakame\PizzaKing\Converter;
 
 use Bakame\PizzaKing\Domain\Cheese;
 use Bakame\PizzaKing\Domain\Euro;
@@ -11,13 +11,13 @@ use Bakame\PizzaKing\Domain\Pizza;
 use Bakame\PizzaKing\Domain\Sauce;
 use PHPUnit\Framework\TestCase;
 
-final class IngredientRendererTest extends TestCase
+final class IngredientConverterTest extends TestCase
 {
-    private IngredientRenderer $transformer;
+    private IngredientConverter $transformer;
 
     public function setUp(): void
     {
-        $this->transformer = new IngredientRenderer();
+        $this->transformer = new IngredientConverter();
     }
 
     /** @test */
