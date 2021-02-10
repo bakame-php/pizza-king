@@ -24,7 +24,7 @@ use const JSON_UNESCAPED_SLASHES;
 
 final class IngredientConverter
 {
-    public function dishToJsonResponse(ResponseInterface $response, Dish $dish, string|null $name = null): ResponseInterface
+    public function dishToJsonResponse(ResponseInterface $response, Dish $dish, string $name): ResponseInterface
     {
         return $this->toJsonResponse($this->dishToArray($dish, $name), $response);
     }

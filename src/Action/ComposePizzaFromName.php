@@ -9,10 +9,8 @@ use Bakame\PizzaKing\Domain\CanNotProcessOrder;
 use Bakame\PizzaKing\Domain\Pizzaiolo;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
-use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function gettype;
 
 final class ComposePizzaFromName implements StatusCodeInterface
 {
@@ -22,14 +20,13 @@ final class ComposePizzaFromName implements StatusCodeInterface
 
     /**
      * @throws InvalidArgumentException
-     * @throws JsonException
      * @throws CanNotProcessOrder
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $name = $request->getAttribute('name');
-        if (!is_string($name)) {
-            throw new InvalidArgumentException('The pizza name should be a string; '.gettype($name).' given.');
+        if (!is_string($name) || '' === $name) {
+            throw new InvalidArgumentException('The pizza name is missing.');
         }
 
         $pizza = $this->pizzaiolo->composePizzaFromName($name);

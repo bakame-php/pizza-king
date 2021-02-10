@@ -11,9 +11,6 @@ use Throwable;
 use function array_key_first;
 use function array_key_last;
 
-/**
- * @SuppressWarnings(PHPMD.UndefinedVariable)
- */
 final class ExceptionConverter implements StatusCodeInterface
 {
     /** @var array<int,string> Map of standard HTTP status code/reason phrases */
