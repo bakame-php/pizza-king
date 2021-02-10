@@ -13,20 +13,20 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Response;
 use function json_encode;
 
-final class ComposePizzaByNameTest extends TestCase
+final class GetIngredientFromAliasTest extends TestCase
 {
     /** @test */
-    public function it_returns_the_price_of_a_pizza(): void
+    public function it_returns_the_ingredient(): void
     {
         $pizzaiolo = new Pizzaiolo();
 
         $renderer = new IngredientConverter();
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromName('carnivore'), 'carnivore');
+        $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromAlias('jambon'));
 
         $request = $this->createStub(ServerRequestInterface::class);
-        $request->method('getAttribute')->willReturn('CarNiVore');
+        $request->method('getAttribute')->willReturn('JAMBon');
 
-        $controller = new ComposePizzaByName($pizzaiolo, $renderer);
+        $controller = new GetIngredientFromAlias($pizzaiolo, $renderer);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -34,28 +34,29 @@ final class ComposePizzaByNameTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_if_no_pizza_name_is_given(): void
+    public function it_fails_if_no_ingredient_name_is_given(): void
     {
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientConverter());
+        $controller = new GetIngredientFromAlias(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn(['carnivore']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The pizza name should be a string; array given.');
+        $this->expectExceptionMessage('The ingredient name should be a string; array given.');
 
         $controller($request, new Response());
     }
 
     /** @test */
-    public function it_fails_if_the_pizza_name_is_unknown(): void
+    public function it_fails_if_the_ingredient_name_is_unknown(): void
     {
-        $controller = new ComposePizzaByName(new Pizzaiolo(), new IngredientConverter());
+        $controller = new GetIngredientFromAlias(new Pizzaiolo(), new IngredientConverter());
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('frites');
 
         $this->expectException(UnableToHandleIngredient::class);
+        $this->expectExceptionMessage('`frites` is an invalid or an unknown ingredient.');
 
         $controller($request, new Response());
     }

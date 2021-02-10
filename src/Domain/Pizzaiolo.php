@@ -5,22 +5,38 @@ declare(strict_types=1);
 namespace Bakame\PizzaKing\Domain;
 
 use function array_map;
+use function is_int;
 
 final class Pizzaiolo
 {
     /**
-     * @param array<string,int> $priceList
+     * @var array<string,Euro>
      */
-    public function __construct(private array $priceList = [])
+    private array $priceList;
+
+    public function __construct(iterable $priceList = [])
     {
+        $this->priceList = [];
+        foreach ($priceList as $ingredient => $cents) {
+            if (!is_string($ingredient) || !is_int($cents)) {
+                throw UnableToHandleIngredient::dueToInvalidPriceList();
+            }
+
+            $amount = Euro::fromCents($cents);
+            if (0 > $amount->cents()) {
+                throw UnableToHandleIngredient::dueToWrongPrice($amount, $ingredient);
+            }
+
+            $this->priceList[$ingredient] = $amount;
+        }
     }
 
     /**
-     * @param array<string> $names
+     * @param array<string> $aliases
      */
-    public function composePizzaFromIngredients(array $names): Pizza
+    public function composePizzaFromIngredients(array $aliases): Pizza
     {
-        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromAlias'], $names), $this->ingredientPrice('pizza'));
+        return Pizza::fromIngredients(array_map([$this, 'getIngredientFromAlias'], $aliases), $this->ingredientPrice('pizza'));
     }
 
     public function getIngredientFromAlias(string $alias): Ingredient
@@ -35,14 +51,7 @@ final class Pizzaiolo
 
     private function ingredientPrice(string|null $name): Euro|null
     {
-        /** @var int|null $amount */
-        $amount = $this->priceList[$name] ?? null;
-
-        if (null === $amount) {
-            return null;
-        }
-
-        return Euro::fromCents($amount);
+        return $this->priceList[$name] ?? null;
     }
 
     public function composePizzaFromName(string $name): Pizza

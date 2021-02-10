@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use function gettype;
 use function is_string;
 
-final class GetIngredientByName implements StatusCodeInterface
+final class GetIngredientFromAlias implements StatusCodeInterface
 {
     public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
     {

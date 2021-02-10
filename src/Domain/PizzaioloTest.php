@@ -106,4 +106,28 @@ final class PizzaioloTest extends TestCase
             $this->pizzaiolo->composeGoat()->price()
         );
     }
+
+    /** @test */
+    public function it_fails_to_be_instantiated_with_a_wrong_price_list(): void
+    {
+        $priceList = [
+            'foobar' => '1 euro',
+        ];
+
+        $this->expectException(UnableToHandleIngredient::class);
+
+        new Pizzaiolo($priceList);
+    }
+
+    /** @test */
+    public function it_fails_to_be_instantiated_with_a_negative_ingredient_price(): void
+    {
+        $priceList = [
+            'foobar' => -1,
+        ];
+
+        $this->expectException(UnableToHandleIngredient::class);
+
+        new Pizzaiolo($priceList);
+    }
 }

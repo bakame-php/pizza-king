@@ -45,4 +45,9 @@ final class UnableToHandleIngredient extends \InvalidArgumentException implement
     {
         return new self('`'.$name.'` is an invalid or an unknown name for `'.$ingredient.'`.');
     }
+
+    public static function dueToInvalidPriceList(): self
+    {
+        return new self('The ingredients price list contains wrong data.');
+    }
 }

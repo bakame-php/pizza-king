@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use function gettype;
 
-final class ComposePizzaByName implements StatusCodeInterface
+final class ComposePizzaFromName implements StatusCodeInterface
 {
     public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
     {

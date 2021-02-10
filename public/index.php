@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bakame\PizzaKing\Action\ComposePizzaByName;
 use Bakame\PizzaKing\Action\ComposePizzaFromIngredients;
-use Bakame\PizzaKing\Action\GetIngredientByName;
+use Bakame\PizzaKing\Action\ComposePizzaFromName;
+use Bakame\PizzaKing\Action\GetIngredientFromAlias;
 use Bakame\PizzaKing\Converter\ExceptionConverter;
 use Bakame\PizzaKing\Converter\IngredientConverter;
 use Bakame\PizzaKing\Domain\Pizzaiolo;
@@ -36,6 +36,6 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     ->toJsonResponse((new ExceptionConverter())->toApiProblem($exception)));
 
 $app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $renderer));
-$app->get('/pizzas/{name}', new ComposePizzaByName($pizzaiolo, $renderer));
-$app->get('/ingredients/{name}', new GetIngredientByName($pizzaiolo, $renderer));
+$app->get('/pizzas/{name}', new ComposePizzaFromName($pizzaiolo, $renderer));
+$app->get('/ingredients/{name}', new GetIngredientFromAlias($pizzaiolo, $renderer));
 $app->run();
