@@ -13,7 +13,8 @@ final class EuroTest extends TestCase
     {
         $money = Euro::fromCents(49_00);
 
-        self::assertSame(49_00, $money->cents());
+        self::assertSame(49.00, $money->amount());
+        self::assertSame(49_00, $money->toCents());
         self::assertSame('EUR', $money->currency());
         self::assertSame('49.00 EUR', $money->toString());
     }

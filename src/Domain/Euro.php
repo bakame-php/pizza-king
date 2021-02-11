@@ -8,7 +8,9 @@ use function sprintf;
 
 final class Euro
 {
-    private function __construct(private int $cents)
+    private const CURRENCY = 'EUR';
+
+    private function __construct(private int $amountInCents)
     {
     }
 
@@ -17,33 +19,38 @@ final class Euro
         return new self($cents);
     }
 
-    public function cents(): int
+    public function toCents(): int
     {
-        return $this->cents;
+        return $this->amountInCents;
+    }
+
+    public function amount(): float
+    {
+        return $this->amountInCents / 100;
     }
 
     public function currency(): string
     {
-        return 'EUR';
+        return self::CURRENCY;
     }
 
     public function toString(): string
     {
-        return sprintf('%.2f', $this->cents / 100).' '.$this->currency();
+        return sprintf('%.2f', $this->amountInCents / 100).' '.self::CURRENCY;
     }
 
     public function add(Euro $euro): self
     {
-        return new self($this->cents + $euro->cents());
+        return new self($this->amountInCents + $euro->amountInCents);
     }
 
     public function subtract(Euro $money): self
     {
-        return new self($this->cents - $money->cents());
+        return new self($this->amountInCents - $money->amountInCents);
     }
 
     public function multiply(int $multiplier): self
     {
-        return new self($this->cents * $multiplier);
+        return new self($this->amountInCents * $multiplier);
     }
 }

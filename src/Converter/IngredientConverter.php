@@ -56,7 +56,7 @@ final class IngredientConverter
     {
         return [
             'currency' => $euro->currency(),
-            'amount' => sprintf('%.2f', $euro->cents() / 100),
+            'amount' => sprintf('%.2f', $euro->amount()),
         ];
     }
 

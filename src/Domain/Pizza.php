@@ -29,7 +29,7 @@ final class Pizza implements Dish
             throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats');
         }
 
-        if (0 > $basePrice->cents()) {
+        if (0 > $basePrice->toCents()) {
             throw UnableToHandleIngredient::dueToWrongBasePrice($basePrice, self::NAME);
         }
 

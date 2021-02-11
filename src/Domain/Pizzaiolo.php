@@ -23,7 +23,7 @@ final class Pizzaiolo
             }
 
             $amount = Euro::fromCents($cents);
-            if (0 > $amount->cents()) {
+            if (0 > $amount->toCents()) {
                 throw UnableToHandleIngredient::dueToWrongPrice($amount, $ingredient);
             }
 

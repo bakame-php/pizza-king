@@ -25,7 +25,7 @@ final class Cheese implements Ingredient
 
     private function __construct(private string $name, Euro $price, string|null $alias)
     {
-        if (0 > $price->cents()) {
+        if (0 > $price->toCents()) {
             throw UnableToHandleIngredient::dueToWrongPrice($price, $name);
         }
 
