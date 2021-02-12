@@ -42,7 +42,6 @@ final class ComposePizzaFromNameTest extends TestCase
         $request->method('getAttribute')->willReturn(['carnivore']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The pizza name is missing.');
 
         $controller($request, new Response());
     }

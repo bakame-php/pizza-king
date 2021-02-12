@@ -36,6 +36,6 @@ $errorMiddleware->setDefaultErrorHandler(fn (
     ->toJsonResponse((new ExceptionConverter())->toApiProblem($exception)));
 
 $app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $renderer));
-$app->get('/pizzas/{name}', new ComposePizzaFromName($pizzaiolo, $renderer));
-$app->get('/ingredients/{name}', new GetIngredientFromAlias($pizzaiolo, $renderer));
+$app->get('/pizzas/{name:[\w\s]+}', new ComposePizzaFromName($pizzaiolo, $renderer));
+$app->get('/ingredients/{alias:[\w\s]+}', new GetIngredientFromAlias($pizzaiolo, $renderer));
 $app->run();

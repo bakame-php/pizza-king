@@ -11,7 +11,6 @@ use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function gettype;
 use function is_string;
 
 final class GetIngredientFromAlias implements StatusCodeInterface
@@ -26,12 +25,12 @@ final class GetIngredientFromAlias implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $name = $request->getAttribute('name');
-        if (!is_string($name)) {
-            throw new InvalidArgumentException('The ingredient name should be a string; '.gettype($name).' given.');
+        $alias = $request->getAttribute('alias', '');
+        if (!is_string($alias)) {
+            throw new InvalidArgumentException('The ingredient alias should be a string.');
         }
 
-        $ingredient = $this->pizzaiolo->getIngredientFromAlias($name);
+        $ingredient = $this->pizzaiolo->getIngredientFromAlias($alias);
 
         return $this->renderer->ingredientToJsonResponse($response, $ingredient)
             ->withStatus(self::STATUS_OK);

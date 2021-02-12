@@ -18,8 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use function array_reduce;
-use function count;
-use function reset;
+use function array_slice;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
@@ -40,14 +39,14 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     }
 
     /**
+     * @throws InvalidArgumentException
      * @throws UnableToHandleIngredient
      *
      * @return array<string>
      */
     private function getIngredientsFromUri(UriInterface $uri): array
     {
-        $query = Query::createFromUri($uri);
-        if (0 === count($query)) {
+        if ('' === $uri->getQuery()) {
             throw new InvalidArgumentException('query string is missing or contains no data.');
         }
 
@@ -65,23 +64,11 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
             return $carry;
         };
 
+        $query = Query::createFromUri($uri);
         /** @var array<string> $meats */
-        $meats = array_reduce($query->getAll('meat'), $reducer, []);
-        $sauces = $query->getAll('sauce');
-        $cheeses = $query->getAll('cheese');
-
-        if (1 !== count($sauces)) {
-            throw UnableToHandleIngredient::dueToWrongQuantity(count($sauces), 'sauce');
-        }
-
-        if (1 !== count($cheeses)) {
-            throw UnableToHandleIngredient::dueToWrongQuantity(count($cheeses), 'cheese');
-        }
-
-        /** @var string|null $sauce */
-        $sauce = reset($sauces);
-        /** @var string|null $cheese */
-        $cheese = reset($cheeses);
+        $meats = array_slice(array_reduce($query->getAll('meat'), $reducer, []), 0, 2, false);
+        $sauce = $query->get('sauce');
+        $cheese = $query->get('cheese');
 
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),

@@ -11,6 +11,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function is_string;
 
 final class ComposePizzaFromName implements StatusCodeInterface
 {
@@ -24,9 +25,9 @@ final class ComposePizzaFromName implements StatusCodeInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $name = $request->getAttribute('name');
-        if (!is_string($name) || '' === $name) {
-            throw new InvalidArgumentException('The pizza name is missing.');
+        $name = $request->getAttribute('name', '');
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('The pizza name should be a string.');
         }
 
         $pizza = $this->pizzaiolo->composePizzaFromName($name);

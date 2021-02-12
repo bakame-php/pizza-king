@@ -42,7 +42,6 @@ final class GetIngredientFromAliasTest extends TestCase
         $request->method('getAttribute')->willReturn(['carnivore']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The ingredient name should be a string; array given.');
 
         $controller($request, new Response());
     }
