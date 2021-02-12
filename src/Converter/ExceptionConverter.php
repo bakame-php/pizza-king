@@ -89,8 +89,6 @@ final class ExceptionConverter implements StatusCodeInterface
         $problem = new ApiProblem(self::REASON_PHRASES[$status] ?? 'Unknown', $this->apiProblemType);
         $problem->setStatus($status);
         $problem->setDetail($exception->getMessage());
-        $problem['code'] = $exception->getCode();
-
         $this->addTracing($problem, $exception);
 
         return $problem;

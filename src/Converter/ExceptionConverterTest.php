@@ -22,8 +22,6 @@ final class ExceptionConverterTest extends TestCase
         self::assertSame(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, $problem->getStatus());
         self::assertSame('Internal Server Error', $problem->getTitle());
         self::assertSame($exception->getMessage(), $problem->getDetail());
-        self::assertArrayHasKey('code', $problem);
-        self::assertSame($exceptionCode, $problem['code']);
         self::assertArrayNotHasKey('tracing', $problem);
     }
 
@@ -38,8 +36,6 @@ final class ExceptionConverterTest extends TestCase
         self::assertSame($exceptionCode, $problem->getStatus());
         self::assertSame('Internal Server Error', $problem->getTitle());
         self::assertSame($exception->getMessage(), $problem->getDetail());
-        self::assertArrayHasKey('code', $problem);
-        self::assertSame($exceptionCode, $problem['code']);
         self::assertArrayNotHasKey('tracing', $problem);
     }
 
@@ -55,8 +51,6 @@ final class ExceptionConverterTest extends TestCase
         self::assertSame($exceptionCode, $problem->getStatus());
         self::assertSame('Bad Request', $problem->getTitle());
         self::assertSame($exception->getMessage(), $problem->getDetail());
-        self::assertArrayHasKey('code', $problem);
-        self::assertSame($exceptionCode, $problem['code']);
         self::assertArrayHasKey('tracing', $problem);
         self::assertIsArray($problem['tracing']);
     }
