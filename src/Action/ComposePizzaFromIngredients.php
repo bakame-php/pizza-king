@@ -17,7 +17,7 @@ use League\Uri\Components\Query;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use function array_reduce;
+use function array_filter;
 use function array_slice;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
@@ -50,15 +50,10 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
             throw new InvalidArgumentException('query string is missing or contains no data.');
         }
 
-        $reducer = fn (array $carry, string|null $value): array => match (true) {
-            null === $value => throw UnableToHandleIngredient::dueToMissingIngredient('meat'),
-            null === Meat::findName($value) => throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat'),
-            default => [...$carry, $value],
-        };
-
         $query = Query::createFromUri($uri);
+        $meatFilter = fn (string|null $value): bool => null !== $value && null !== Meat::findName($value);
         /** @var array<string> $meats */
-        $meats = array_slice(array_reduce($query->getAll('meat'), $reducer, []), 0, 2, false);
+        $meats = array_slice(array_filter($query->getAll('meat'), $meatFilter), 0, 2, false);
         $sauce = $query->get('sauce');
         $cheese = $query->get('cheese');
 

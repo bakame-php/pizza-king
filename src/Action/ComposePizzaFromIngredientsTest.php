@@ -51,31 +51,41 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_if_the_meat_list_is_invalid(): void
+    public function it_skips_meat_if_the_meat_list_is_invalid(): void
     {
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=creme&cheese=mozzarella&meat=ananas');
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $this->expectException(UnableToHandleIngredient::class);
+        $pizzaiolo = new Pizzaiolo();
+        $renderer = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $response = $controller($request, new Response());
 
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientConverter());
-        $controller($request, new Response());
+        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['creme', 'mozzarella']), 'custom pizza');
+
+        self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
+        self::assertSame(json_encode($result), $response->getBody()->__toString());
     }
 
     /** @test */
-    public function it_fails_if_the_meat_value_is_null(): void
+    public function it_skips_meat_if_the_meat_value_is_null(): void
     {
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), new IngredientConverter());
-
         $uri = $this->createStub(UriInterface::class);
         $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&meat');
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $this->expectException(UnableToHandleIngredient::class);
-        $controller($request, new Response());
+        $pizzaiolo = new Pizzaiolo();
+        $renderer = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $response = $controller($request, new Response());
+
+        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
+
+        self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
+        self::assertSame(json_encode($result), $response->getBody()->__toString());
     }
 
     /** @test */
