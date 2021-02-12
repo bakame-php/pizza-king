@@ -50,18 +50,10 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
             throw new InvalidArgumentException('query string is missing or contains no data.');
         }
 
-        $reducer = function (array $carry, string|null $value): array {
-            if (null === $value) {
-                throw UnableToHandleIngredient::dueToMissingIngredient('meat');
-            }
-
-            if (null === Meat::findName($value)) {
-                throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat');
-            }
-
-            $carry[] = $value;
-
-            return $carry;
+        $reducer = fn (array $carry, string|null $value): array => match (true) {
+            null === $value => throw UnableToHandleIngredient::dueToMissingIngredient('meat'),
+            null === Meat::findName($value) => throw UnableToHandleIngredient::dueToUnknownVariety($value, 'meat'),
+            default => [...$carry, $value],
         };
 
         $query = Query::createFromUri($uri);
