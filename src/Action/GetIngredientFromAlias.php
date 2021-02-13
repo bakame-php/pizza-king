@@ -15,7 +15,7 @@ use function is_string;
 
 final class GetIngredientFromAlias implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $converter)
     {
     }
 
@@ -32,7 +32,7 @@ final class GetIngredientFromAlias implements StatusCodeInterface
 
         $ingredient = $this->pizzaiolo->getIngredientFromAlias($alias);
 
-        return $this->renderer->ingredientToJsonResponse($response, $ingredient)
+        return $this->converter->ingredientToJsonResponse($response, $ingredient)
             ->withStatus(self::STATUS_OK);
     }
 }

@@ -20,13 +20,13 @@ final class GetIngredientFromAliasTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $renderer = new IngredientConverter();
-        $result = $renderer->ingredientToArray($pizzaiolo->getIngredientFromAlias('jambon'));
+        $converter = new IngredientConverter();
+        $result = $converter->ingredientToArray($pizzaiolo->getIngredientFromAlias('jambon'));
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('JAMBon');
 
-        $controller = new GetIngredientFromAlias($pizzaiolo, $renderer);
+        $controller = new GetIngredientFromAlias($pizzaiolo, $converter);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);

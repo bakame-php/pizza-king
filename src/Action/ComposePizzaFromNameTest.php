@@ -20,13 +20,13 @@ final class ComposePizzaFromNameTest extends TestCase
     {
         $pizzaiolo = new Pizzaiolo();
 
-        $renderer = new IngredientConverter();
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromName('carnivore'), 'carnivore');
+        $converter = new IngredientConverter();
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromName('carnivore'), 'carnivore');
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getAttribute')->willReturn('CarNiVore');
 
-        $controller = new ComposePizzaFromName($pizzaiolo, $renderer);
+        $controller = new ComposePizzaFromName($pizzaiolo, $converter);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);

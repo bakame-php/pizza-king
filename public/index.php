@@ -20,7 +20,7 @@ require dirname(__DIR__).'/vendor/autoload.php';
 /** @var array<string,int> $priceList */
 $priceList = require dirname(__DIR__).'/config/priceList.php';
 $pizzaiolo = new Pizzaiolo($priceList);
-$renderer = new IngredientConverter();
+$converter = new IngredientConverter();
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
@@ -35,7 +35,7 @@ $errorMiddleware->setDefaultErrorHandler(fn (
 ): ResponseInterface => (new HttpConverter(new ResponseFactory()))
     ->toJsonResponse((new ExceptionConverter())->toApiProblem($exception)));
 
-$app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $renderer));
-$app->get('/pizzas/{name:[\w\s]+}', new ComposePizzaFromName($pizzaiolo, $renderer));
-$app->get('/ingredients/{alias:[\w\s]+}', new GetIngredientFromAlias($pizzaiolo, $renderer));
+$app->get('/pizzas', new ComposePizzaFromIngredients($pizzaiolo, $converter));
+$app->get('/pizzas/{name:[\w\s]+}', new ComposePizzaFromName($pizzaiolo, $converter));
+$app->get('/ingredients/{alias:[\w\s]+}', new GetIngredientFromAlias($pizzaiolo, $converter));
 $app->run();

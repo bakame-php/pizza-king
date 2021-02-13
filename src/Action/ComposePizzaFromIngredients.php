@@ -22,7 +22,7 @@ use function array_slice;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $converter)
     {
     }
 
@@ -34,7 +34,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
         $ingredients = $this->getIngredientsFromUri($request->getUri());
         $pizza = $this->pizzaiolo->composePizzaFromIngredients($ingredients);
 
-        return $this->renderer->dishToJsonResponse($response, $pizza, 'custom pizza')
+        return $this->converter->dishToJsonResponse($response, $pizza, 'custom pizza')
             ->withStatus(self::STATUS_OK);
     }
 

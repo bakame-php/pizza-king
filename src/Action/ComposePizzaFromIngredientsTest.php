@@ -20,8 +20,8 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_returns_the_price_of_a_pizza(): void
     {
         $pizzaiolo = new Pizzaiolo();
-        $renderer = new IngredientConverter();
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients([
+        $converter = new IngredientConverter();
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromIngredients([
             'creme', 'mozzarella', 'jambon', 'pepperoni',
         ]), 'custom pizza');
 
@@ -30,7 +30,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $renderer);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $converter);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
@@ -59,11 +59,11 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $pizzaiolo = new Pizzaiolo();
-        $renderer = new IngredientConverter();
-        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $converter = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $converter);
         $response = $controller($request, new Response());
 
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['creme', 'mozzarella']), 'custom pizza');
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromIngredients(['creme', 'mozzarella']), 'custom pizza');
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
         self::assertSame(json_encode($result), $response->getBody()->__toString());
@@ -78,11 +78,11 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $pizzaiolo = new Pizzaiolo();
-        $renderer = new IngredientConverter();
-        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $converter = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $converter);
         $response = $controller($request, new Response());
 
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
         self::assertSame(json_encode($result), $response->getBody()->__toString());
@@ -97,11 +97,11 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request->method('getUri')->willReturn($uri);
 
         $pizzaiolo = new Pizzaiolo();
-        $renderer = new IngredientConverter();
-        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $converter = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $converter);
         $response = $controller($request, new Response());
 
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
         self::assertSame(json_encode($result), $response->getBody()->__toString());
@@ -167,8 +167,8 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     public function it_uses_the_first_items_of_each_ingredients_if_there_are_too_many_in_the_query(): void
     {
         $pizzaiolo = new Pizzaiolo();
-        $renderer = new IngredientConverter();
-        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients([
+        $converter = new IngredientConverter();
+        $result = $converter->dishToArray($pizzaiolo->composePizzaFromIngredients([
             'creme', 'mozzarella', 'jambon', 'pepperoni',
         ]), 'custom pizza');
 
@@ -177,7 +177,7 @@ final class ComposePizzaFromIngredientsTest extends TestCase
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
 
-        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $renderer);
+        $controller = new ComposePizzaFromIngredients(new Pizzaiolo(), $converter);
         $response = $controller($request, new Response());
 
         self::assertSame('application/json', $response->getHeader('Content-Type')['0']);

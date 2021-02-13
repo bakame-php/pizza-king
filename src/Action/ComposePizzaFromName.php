@@ -15,7 +15,7 @@ use function is_string;
 
 final class ComposePizzaFromName implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $renderer)
+    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $converter)
     {
     }
 
@@ -32,7 +32,7 @@ final class ComposePizzaFromName implements StatusCodeInterface
 
         $pizza = $this->pizzaiolo->composePizzaFromName($name);
 
-        return $this->renderer->dishToJsonResponse($response, $pizza, $name)
+        return $this->converter->dishToJsonResponse($response, $pizza, $name)
             ->withStatus(self::STATUS_OK);
     }
 }
