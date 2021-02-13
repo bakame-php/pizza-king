@@ -31,11 +31,6 @@ final class UnableToHandleIngredient extends \InvalidArgumentException implement
         return new self('`'.$ingredient.'` can not have a base price of `'.$price->toString().'`.');
     }
 
-    public static function dueToUnSupportedIngredient(): self
-    {
-        return new self('An unknown or unsupported ingredient has been detected.');
-    }
-
     public static function dueToUnknownIngredient(string $ingredient): self
     {
         return new self('`'.$ingredient.'` is an invalid or an unknown ingredient.');

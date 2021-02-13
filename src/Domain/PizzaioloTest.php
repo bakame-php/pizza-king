@@ -23,7 +23,7 @@ final class PizzaioloTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`sauce` is missing.');
 
-        $this->pizzaiolo->composePizzaFromIngredients(['jambon', 'mozzarella']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['jambon', 'mozzarella']);
     }
 
     /** @test */
@@ -32,7 +32,7 @@ final class PizzaioloTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`sauce` can not be used with the following quantity `2`.');
 
-        $this->pizzaiolo->composePizzaFromIngredients(['cream', 'tomato', 'goat']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['cream', 'tomato', 'goat']);
     }
 
     /** @test */
@@ -41,7 +41,7 @@ final class PizzaioloTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`cheese` is missing.');
 
-        $this->pizzaiolo->composePizzaFromIngredients(['jambon', 'tomato']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['jambon', 'tomato']);
     }
 
     /** @test */
@@ -50,7 +50,7 @@ final class PizzaioloTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`cheese` can not be used with the following quantity `2`.');
 
-        $this->pizzaiolo->composePizzaFromIngredients(['jambon', 'mozzarella', 'goat']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['jambon', 'mozzarella', 'goat']);
     }
 
     /** @test */
@@ -59,7 +59,7 @@ final class PizzaioloTest extends TestCase
         $this->expectException(UnableToHandleIngredient::class);
         $this->expectExceptionMessage('`meats` can not be used with the following quantity `3`.');
 
-        $this->pizzaiolo->composePizzaFromIngredients(['mozzarella', 'tomato', 'jambon', 'pepperoni', 'pepperoni']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['mozzarella', 'tomato', 'jambon', 'pepperoni', 'pepperoni']);
     }
 
     /** @test */
@@ -67,7 +67,7 @@ final class PizzaioloTest extends TestCase
     {
         $this->expectException(UnableToHandleIngredient::class);
 
-        $this->pizzaiolo->composePizzaFromIngredients(['mozzarella', 'tomato', 'ananas']);
+        $this->pizzaiolo->composeClassicPizzaFromIngredients(['mozzarella', 'tomato', 'ananas']);
     }
 
     /** @test */

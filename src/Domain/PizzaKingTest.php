@@ -22,7 +22,7 @@ final class PizzaKingTest extends TestCase
      */
     public function createPizza(array $ingredients): Pizza
     {
-        return $this->pizzaiolo->composePizzaFromIngredients($ingredients);
+        return $this->pizzaiolo->composeClassicPizzaFromIngredients($ingredients);
     }
 
     public function testReine(): void

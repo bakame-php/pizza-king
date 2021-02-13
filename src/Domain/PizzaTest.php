@@ -68,16 +68,16 @@ final class PizzaTest extends TestCase
     /** @test */
     public function it_fails_to_compose_a_pizza_with_unknown_ingredient(): void
     {
-        $this->expectException(UnableToHandleIngredient::class);
-
         $ananas = $this->createStub(Ingredient::class);
         $ananas->method('name')->willReturn('ananas');
         $ananas->method('price')->willReturn(Euro::fromCents(30_00));
 
-        Pizza::fromIngredients([
+        $pizza = Pizza::fromIngredients([
             Cheese::fromAlias('chevre'),
             Sauce::fromAlias('sauce TomAte'),
             $ananas,
         ]);
+
+        self::assertContains($ananas, $pizza->ingredients());
     }
 }

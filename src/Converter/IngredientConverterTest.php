@@ -60,19 +60,19 @@ final class IngredientConverterTest extends TestCase
             ],
             'ingredients' => [
                 [
-                    'type' => 'cheese',
-                    'name' => 'goat',
-                    'price' => [
-                        'currency' => 'EUR',
-                        'amount' => '2.00',
-                    ],
-                ],
-                [
                     'type' => 'sauce',
                     'name' => 'tomato',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '1.00',
+                    ],
+                ],
+                [
+                    'type' => 'cheese',
+                    'name' => 'goat',
+                    'price' => [
+                        'currency' => 'EUR',
+                        'amount' => '2.00',
                     ],
                 ],
             ],

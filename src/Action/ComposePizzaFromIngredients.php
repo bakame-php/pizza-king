@@ -32,7 +32,7 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $ingredients = $this->getIngredientsFromUri($request->getUri());
-        $pizza = $this->pizzaiolo->composePizzaFromIngredients($ingredients);
+        $pizza = $this->pizzaiolo->composeClassicPizzaFromIngredients($ingredients);
 
         return $this->converter->dishToJsonResponse($response, $pizza, 'custom pizza')
             ->withStatus(self::STATUS_OK);
