@@ -89,6 +89,25 @@ final class ComposePizzaFromIngredientsTest extends TestCase
     }
 
     /** @test */
+    public function it_only_takes_the_first_two_meats_value_null(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getQuery')->willReturn('sauce=cream&cheese=goat&meat&meat&meat=ham');
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $pizzaiolo = new Pizzaiolo();
+        $renderer = new IngredientConverter();
+        $controller = new ComposePizzaFromIngredients($pizzaiolo, $renderer);
+        $response = $controller($request, new Response());
+
+        $result = $renderer->dishToArray($pizzaiolo->composePizzaFromIngredients(['cream', 'goat']), 'custom pizza');
+
+        self::assertSame('application/json', $response->getHeader('Content-Type')['0']);
+        self::assertSame(json_encode($result), $response->getBody()->__toString());
+    }
+
+    /** @test */
     public function it_fails_if_the_sauce_is_not_supported(): void
     {
         $uri = $this->createStub(UriInterface::class);

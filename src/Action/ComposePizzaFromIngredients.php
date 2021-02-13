@@ -51,11 +51,13 @@ final class ComposePizzaFromIngredients implements StatusCodeInterface
         }
 
         $query = Query::createFromUri($uri);
-        $meatFilter = fn (string|null $value): bool => null !== $value && null !== Meat::findName($value);
-        /** @var array<string> $meats */
-        $meats = array_slice(array_filter($query->getAll('meat'), $meatFilter), 0, 2, false);
         $sauce = $query->get('sauce');
         $cheese = $query->get('cheese');
+        /** @var array<string> $meats */
+        $meats = array_filter(
+            array_slice(array: $query->getAll('meat'), offset: 0, length: 2, preserve_keys: false),
+            fn (string|null $value): bool => null !== $value && null !== Meat::findName($value)
+        );
 
         return match (true) {
             null === $sauce => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
