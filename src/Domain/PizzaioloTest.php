@@ -21,7 +21,7 @@ final class PizzaioloTest extends TestCase
     public function it_fails_to_compose_a_pizza_without_sauce(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
-        $this->expectExceptionMessage('`sauce` is missing.');
+        $this->expectExceptionMessage('`sauce` can not be used with the following quantity `0`.');
 
         $this->pizzaiolo->composeClassicPizzaFromIngredients(['jambon', 'mozzarella']);
     }
@@ -39,7 +39,7 @@ final class PizzaioloTest extends TestCase
     public function it_fails_to_compose_a_pizza_without_cheese(): void
     {
         $this->expectException(UnableToHandleIngredient::class);
-        $this->expectExceptionMessage('`cheese` is missing.');
+        $this->expectExceptionMessage('`cheese` can not be used with the following quantity `0`.');
 
         $this->pizzaiolo->composeClassicPizzaFromIngredients(['jambon', 'tomato']);
     }

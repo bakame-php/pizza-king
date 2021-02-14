@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Bakame\PizzaKing\Domain;
 
 use function array_map;
-use function count;
 use function is_int;
+use function strtolower;
 
 final class Pizzaiolo
 {
@@ -39,27 +39,17 @@ final class Pizzaiolo
     {
         $ingredients = IngredientList::fromList(array_map([$this, 'getIngredientFromAlias'], $aliases));
 
-        $cheeses = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
-        $sauces = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Sauce);
-        $meats = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Meat);
+        $nbCheese = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese)->count();
+        if (1 !== $nbCheese) {
+            throw UnableToHandleIngredient::dueToWrongQuantity($nbCheese, 'cheese');
+        }
 
-        $nbCheese = count($cheeses);
-        $nbSauce = count($sauces);
-        $nbMeat = count($meats);
-
-        match ($nbCheese) {
-            0 => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
-            1 => true,
-            default => throw UnableToHandleIngredient::dueToWrongQuantity($nbCheese, 'cheese'),
+        $nbSauce = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Sauce)->count();
+        if (1 !== $nbSauce) {
+            throw UnableToHandleIngredient::dueToWrongQuantity($nbSauce, 'sauce');
         };
 
-        match ($nbSauce) {
-            0 => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
-            1 => true,
-            // no break
-            default => throw UnableToHandleIngredient::dueToWrongQuantity($nbSauce, 'sauce'),
-       };
-
+        $nbMeat = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Meat)->count();
         if (2 < $nbMeat) {
             throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats');
         }
@@ -69,10 +59,12 @@ final class Pizzaiolo
 
     public function getIngredientFromAlias(string $alias): Ingredient
     {
-        return match (true) {
-            null !== Cheese::findName($alias) => Cheese::fromAlias($alias, $this->ingredientPrice(Cheese::findName($alias))),
-            null !== Sauce::findName($alias) => Sauce::fromAlias($alias, $this->ingredientPrice(Sauce::findName($alias))),
-            null !== Meat::findName($alias) => Meat::fromAlias($alias, $this->ingredientPrice(Meat::findName($alias))),
+        $normalizedAlias = trim(strtolower($alias));
+
+        return match ($normalizedAlias) {
+            'mozzarella', 'goat', 'chevre' => Cheese::fromAlias($normalizedAlias, $this->ingredientPrice(Cheese::findName($normalizedAlias))),
+            'sauce tomate', 'tomato', 'cream', 'creme' => Sauce::fromAlias($normalizedAlias, $this->ingredientPrice(Sauce::findName($normalizedAlias))),
+            'jambon', 'ham', 'pepperoni' => Meat::fromAlias($normalizedAlias, $this->ingredientPrice(Meat::findName($normalizedAlias))),
             default => throw UnableToHandleIngredient::dueToUnknownIngredient($alias),
         };
     }
@@ -85,11 +77,9 @@ final class Pizzaiolo
     public function composePizzaFromName(string $name): Pizza
     {
         $name = strtolower(trim($name));
-        if ('' === $name) {
-            throw UnableToHandleIngredient::dueToMissingIngredient('pizza name');
-        }
 
         return match ($name) {
+            '' => throw UnableToHandleIngredient::dueToMissingIngredient('pizza name'),
             'reine', 'queen' => $this->composeQueen(),
             'napolitaine', 'napolitana' => $this->composeNapolitana(),
             'carnivore' => $this->composeCarnivore(),
@@ -98,22 +88,22 @@ final class Pizzaiolo
         };
     }
 
-    public function composeQueen(array $aliases = []): Pizza
+    public function composeQueen(): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'jambon', 'mozzarella']);
     }
 
-    public function composeNapolitana(array $aliases = []): Pizza
+    public function composeNapolitana(): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'mozzarella']);
     }
 
-    public function composeGoat(array $aliases = []): Pizza
+    public function composeGoat(): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'chevre']);
     }
 
-    public function composeCarnivore(array $aliases = []): Pizza
+    public function composeCarnivore(): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni']);
     }

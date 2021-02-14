@@ -37,8 +37,8 @@ final class IngredientConverterTest extends TestCase
     public function it_can_convert_an_ingredient(): void
     {
         $expected = [
-            'type' => 'cheese',
             'name' => 'mozzarella',
+            'alias' => 'mozzarella',
             'price' => [
                 'currency' => 'EUR',
                 'amount' => '1.00',
@@ -53,24 +53,24 @@ final class IngredientConverterTest extends TestCase
     public function test_it_can_convert_a_pizza_without_meat(): void
     {
         $expected = [
-            'type' => 'pizza',
             'name' => 'pizza',
+            'alias' => 'pizza',
             'basePrice' => [
                 'currency' => 'EUR',
                 'amount' => '4.00',
             ],
             'ingredients' => [
                 [
-                    'type' => 'sauce',
                     'name' => 'tomato',
+                    'alias' => 'tomato',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '1.00',
                     ],
                 ],
                 [
-                    'type' => 'cheese',
                     'name' => 'goat',
+                    'alias' => 'goat',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '2.00',
@@ -95,32 +95,32 @@ final class IngredientConverterTest extends TestCase
     public function test_it_can_convert_a_pizza_with_meats(): void
     {
         $expected = [
-            'type' => 'pizza',
             'name' => 'pizza',
+            'alias' => 'pizza',
             'basePrice' => [
                 'currency' => 'EUR',
                 'amount' => '4.00',
             ],
             'ingredients' => [
                 [
-                    'type' => 'cheese',
                     'name' => 'goat',
+                    'alias' => 'goat',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '1.00',
                     ],
                 ],
                 [
-                    'type' => 'sauce',
                     'name' => 'tomato',
+                    'alias' => 'tomato',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '2.00',
                     ],
                 ],
                 [
-                    'type' => 'meat',
-                    'name' => 'jambon',
+                    'name' => 'ham',
+                    'alias' => 'jambon',
                     'price' => [
                         'currency' => 'EUR',
                         'amount' => '3.00',
