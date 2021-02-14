@@ -130,4 +130,55 @@ final class PizzaioloTest extends TestCase
 
         new Pizzaiolo($priceList);
     }
+
+    /** @test */
+    public function it_can_compose_a_pizza_queen(): void
+    {
+        $pizza = $this->pizzaiolo->composeQueen();
+
+        self::assertCount(3, $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(10_00), $pizza->price());
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('queen'));
+    }
+
+    /** @test */
+    public function it_can_compose_a_pizza_napolitana(): void
+    {
+        $pizza = $this->pizzaiolo->composeNapolitana();
+
+        self::assertCount(2, $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(8_00), $pizza->price());
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('napolitana'));
+    }
+
+    /** @test */
+    public function it_can_compose_a_pizza_chevre(): void
+    {
+        $pizza = $this->pizzaiolo->composeGoat();
+
+        self::assertCount(2, $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('tomato'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('chevre'), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(7_00), $pizza->price());
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('chevre'));
+    }
+
+    /** @test */
+    public function it_can_compose_a_pizza_carnivore(): void
+    {
+        $pizza = $this->pizzaiolo->composeCarnivore();
+
+        self::assertCount(4, $pizza->ingredients());
+        self::assertContainsEquals(Sauce::fromAlias('creme'), $pizza->ingredients());
+        self::assertContainsEquals(Cheese::fromAlias('mozzarella'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('jambon'), $pizza->ingredients());
+        self::assertContainsEquals(Meat::fromAlias('pepperoni'), $pizza->ingredients());
+        self::assertEquals(Euro::fromCents(14_00), $pizza->price());
+        self::assertEquals($pizza, $this->pizzaiolo->composePizzaFromName('carnivore'));
+    }
 }

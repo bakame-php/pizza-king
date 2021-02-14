@@ -9,7 +9,6 @@ use Bakame\PizzaKing\Domain\Euro;
 use Bakame\PizzaKing\Domain\Ingredient;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
-use function array_map;
 use function array_pop;
 use function explode;
 use function json_encode;
@@ -41,7 +40,7 @@ final class IngredientConverter
             'type' => strtolower(array_pop($path)),
             'name' => $dish->alias(),
             'basePrice' => $this->euroToArray($dish->basePrice()),
-            'ingredients' => array_map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient), $dish->ingredients()),
+            'ingredients' => $dish->ingredients()->map(fn (Ingredient $ingredient): array => $this->ingredientToArray($ingredient)),
             'price' => $this->euroToArray($dish->price()),
         ];
 

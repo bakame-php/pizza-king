@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Bakame\PizzaKing\Domain;
 
-use function array_filter;
 use function array_map;
 use function count;
 use function is_int;
-use function reset;
 
 final class Pizzaiolo
 {
@@ -39,31 +37,25 @@ final class Pizzaiolo
      */
     public function composeClassicPizzaFromIngredients(array $aliases): Pizza
     {
-        /** @var array<Ingredient> $ingredients */
-        $ingredients = array_map([$this, 'getIngredientFromAlias'], $aliases);
+        $ingredients = IngredientList::fromList(array_map([$this, 'getIngredientFromAlias'], $aliases));
 
-        /** @var Cheese[] $cheeses */
-        $cheeses = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
-        /** @var Sauce[] $sauces */
-        $sauces = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Sauce);
-        /** @var Meat[] $meats */
-        $meats = array_filter($ingredients, fn (Ingredient $ingredient): bool => $ingredient instanceof Meat);
+        $cheeses = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Cheese);
+        $sauces = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Sauce);
+        $meats = $ingredients->filter(fn (Ingredient $ingredient): bool => $ingredient instanceof Meat);
 
         $nbCheese = count($cheeses);
         $nbSauce = count($sauces);
         $nbMeat = count($meats);
 
-        /** @var Cheese $cheese */
-        $cheese = match ($nbCheese) {
+        match ($nbCheese) {
             0 => throw UnableToHandleIngredient::dueToMissingIngredient('cheese'),
-            1 => reset($cheeses),
+            1 => true,
             default => throw UnableToHandleIngredient::dueToWrongQuantity($nbCheese, 'cheese'),
         };
 
-        /** @var Sauce $sauce */
-        $sauce = match ($nbSauce) {
+        match ($nbSauce) {
             0 => throw UnableToHandleIngredient::dueToMissingIngredient('sauce'),
-            1 => reset($sauces),
+            1 => true,
             // no break
             default => throw UnableToHandleIngredient::dueToWrongQuantity($nbSauce, 'sauce'),
        };
@@ -72,7 +64,7 @@ final class Pizzaiolo
             throw UnableToHandleIngredient::dueToWrongQuantity($nbMeat, 'meats');
         }
 
-        return Pizza::fromIngredients([$sauce, $cheese, ...$meats], $this->ingredientPrice('pizza'));
+        return Pizza::fromIngredients($ingredients, $this->ingredientPrice('pizza'));
     }
 
     public function getIngredientFromAlias(string $alias): Ingredient
@@ -106,22 +98,22 @@ final class Pizzaiolo
         };
     }
 
-    public function composeQueen(): Pizza
+    public function composeQueen(array $aliases = []): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'jambon', 'mozzarella']);
     }
 
-    public function composeNapolitana(): Pizza
+    public function composeNapolitana(array $aliases = []): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'mozzarella']);
     }
 
-    public function composeGoat(): Pizza
+    public function composeGoat(array $aliases = []): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['tomato', 'chevre']);
     }
 
-    public function composeCarnivore(): Pizza
+    public function composeCarnivore(array $aliases = []): Pizza
     {
         return $this->composeClassicPizzaFromIngredients(['creme', 'mozzarella', 'jambon', 'pepperoni']);
     }

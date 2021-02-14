@@ -14,7 +14,7 @@ final class PizzaTest extends TestCase
         $sauce = Sauce::fromAlias('tomato');
         $cheese = Cheese::fromAlias('mozzarella');
         $meat = Meat::fromAlias('pepperoni');
-        $pizza = Pizza::fromIngredients([$sauce, $cheese, $meat]);
+        $pizza = Pizza::fromIngredients(new IngredientList($sauce, $cheese, $meat));
         $ingredients = $pizza->ingredients();
 
         self::assertSame('pizza', $pizza->name());
@@ -32,7 +32,7 @@ final class PizzaTest extends TestCase
     {
         $sauce = Sauce::fromAlias('tomato');
         $cheese = Cheese::fromAlias('mozzarella');
-        $pizza = Pizza::fromIngredients([$sauce, $cheese]);
+        $pizza = Pizza::fromIngredients(new IngredientList($sauce, $cheese));
         $ingredients = $pizza->ingredients();
         self::assertCount(2, $ingredients);
         self::assertContains($cheese, $ingredients);
@@ -45,8 +45,8 @@ final class PizzaTest extends TestCase
     {
         $sauce = Sauce::fromAlias('tomato');
         $cheese = Cheese::fromAlias('mozzarella');
-        $pizza = Pizza::fromIngredients([$sauce, $cheese]);
-        $altPizza = Pizza::fromIngredients([$sauce, $cheese], Euro::fromCents(10_00));
+        $pizza = Pizza::fromIngredients(new IngredientList($sauce, $cheese));
+        $altPizza = Pizza::fromIngredients(new IngredientList($sauce, $cheese), Euro::fromCents(10_00));
         self::assertEquals(Euro::fromCents(4_00), $pizza->basePrice());
         self::assertEquals(Euro::fromCents(8_00), $pizza->price());
         self::assertEquals(Euro::fromCents(10_00), $altPizza->basePrice());
@@ -60,7 +60,7 @@ final class PizzaTest extends TestCase
         $this->expectExceptionMessage('`pizza` can not have a base price of `-5.00 EUR`.');
 
         Pizza::fromIngredients(
-            [Sauce::fromAlias('tomato'), Cheese::fromAlias('mozzarella')],
+            IngredientList::fromList([Sauce::fromAlias('tomato'), Cheese::fromAlias('mozzarella')]),
             Euro::fromCents(-5_00)
         );
     }
@@ -72,11 +72,11 @@ final class PizzaTest extends TestCase
         $ananas->method('name')->willReturn('ananas');
         $ananas->method('price')->willReturn(Euro::fromCents(30_00));
 
-        $pizza = Pizza::fromIngredients([
+        $pizza = Pizza::fromIngredients(new IngredientList(
             Cheese::fromAlias('chevre'),
             Sauce::fromAlias('sauce TomAte'),
             $ananas,
-        ]);
+        ));
 
         self::assertContains($ananas, $pizza->ingredients());
     }

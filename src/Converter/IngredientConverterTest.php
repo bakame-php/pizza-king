@@ -6,6 +6,7 @@ namespace Bakame\PizzaKing\Converter;
 
 use Bakame\PizzaKing\Domain\Cheese;
 use Bakame\PizzaKing\Domain\Euro;
+use Bakame\PizzaKing\Domain\IngredientList;
 use Bakame\PizzaKing\Domain\Meat;
 use Bakame\PizzaKing\Domain\Pizza;
 use Bakame\PizzaKing\Domain\Sauce;
@@ -82,10 +83,10 @@ final class IngredientConverterTest extends TestCase
             ],
         ];
 
-        $pizza = Pizza::fromIngredients([
+        $pizza = Pizza::fromIngredients(IngredientList::fromList([
             Sauce::fromAlias('tomato', Euro::fromCents(1_00)),
             Cheese::fromAlias('goat', Euro::fromCents(2_00)),
-        ]);
+        ]));
 
         self::assertSame($expected, $this->transformer->dishToArray($pizza));
     }
@@ -132,11 +133,11 @@ final class IngredientConverterTest extends TestCase
             ],
         ];
 
-        $pizza = Pizza::fromIngredients([
+        $pizza = Pizza::fromIngredients(IngredientList::fromList([
             Cheese::fromAlias('goat', Euro::fromCents(1_00)),
             Sauce::fromAlias('tomato', Euro::fromCents(2_00)),
             Meat::fromAlias('jambon', Euro::fromCents(3_00)),
-        ]);
+        ]));
 
         self::assertSame($expected, $this->transformer->dishToArray($pizza));
     }
