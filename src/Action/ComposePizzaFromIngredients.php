@@ -22,8 +22,10 @@ use function array_slice;
 
 final class ComposePizzaFromIngredients implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $converter)
-    {
+    public function __construct(
+        private Pizzaiolo $pizzaiolo,
+        private IngredientConverter $converter
+    ) {
     }
 
     /**

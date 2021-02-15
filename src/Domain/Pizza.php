@@ -11,8 +11,10 @@ final class Pizza implements Dish
 
     private Euro $basePrice;
 
-    private function __construct(Euro $basePrice, private IngredientList $ingredients)
-    {
+    private function __construct(
+        Euro $basePrice,
+        private IngredientList $ingredients
+    ) {
         if (0 > $basePrice->toCents()) {
             throw UnableToHandleIngredient::dueToWrongBasePrice($basePrice, self::NAME);
         }

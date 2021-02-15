@@ -78,8 +78,10 @@ final class ExceptionConverter implements StatusCodeInterface
     public const ADD_TRACING = 1;
     public const REMOVE_TRACING = 0;
 
-    public function __construct(private string $apiProblemType = 'about:blank', private int $tracing = self::REMOVE_TRACING)
-    {
+    public function __construct(
+        private string $apiProblemType = 'about:blank',
+        private int $tracing = self::REMOVE_TRACING
+    ) {
     }
 
     public function toApiProblem(Throwable $exception): ApiProblem

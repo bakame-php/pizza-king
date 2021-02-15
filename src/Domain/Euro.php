@@ -10,8 +10,9 @@ final class Euro
 {
     private const CURRENCY = 'EUR';
 
-    private function __construct(private int $amountInCents)
-    {
+    private function __construct(
+        private int $amountInCents
+    ) {
     }
 
     public static function fromCents(int $cents): self

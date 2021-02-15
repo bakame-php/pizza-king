@@ -15,8 +15,10 @@ use function is_string;
 
 final class ComposePizzaFromName implements StatusCodeInterface
 {
-    public function __construct(private Pizzaiolo $pizzaiolo, private IngredientConverter $converter)
-    {
+    public function __construct(
+        private Pizzaiolo $pizzaiolo,
+        private IngredientConverter $converter
+    ) {
     }
 
     /**
